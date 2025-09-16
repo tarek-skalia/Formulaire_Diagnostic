@@ -1,5 +1,4 @@
 // api/submit.js
-// Proxy Vercel → envoie les données du formulaire vers ton webhook n8n
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -7,29 +6,32 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Récupération des données envoyées par le formulaire
-    const data = req.body;
+    // 🔗 Ton webhook N8N
+    const webhookUrl = "https://n8n-skalia-u41651.vm.elestio.app/webhook-test/525f3f8f-cab0-439b-b881-2348796bbbd7";
 
-    // Envoi vers ton webhook n8n
-    const response = await fetch(
-      "https://n8n-skalia-u41651.vm.elestio.app/webhook-test/525f3f8f-cab0-439b-b881-2348796bbbd7",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      }
-    );
+    // 📩 Envoi des données reçues au webhook
+    const response = await fetch(webhookUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(req.body),
+    });
 
     if (!response.ok) {
-      throw new Error(`Erreur côté n8n : ${response.status}`);
+      throw new Error(`Erreur N8N: ${response.statusText}`);
     }
 
-    // Réponse succès
-    return res.status(200).json({ success: true });
-  } catch (err) {
-    console.error("Erreur proxy:", err);
-    return res
-      .status(500)
-      .json({ error: "Erreur interne lors de l'envoi au webhook" });
+    // 🔎 Essaie de parser la réponse JSON de N8N (si elle existe)
+    let data = {};
+    try {
+      data = await response.json();
+    } catch {
+      data = { message: "Pas de JSON retourné par N8N" };
+    }
+
+    // ✅ Réponse au frontend
+    res.status(200).json({ success: true, data });
+  } catch (error) {
+    console.error("Erreur proxy vers N8N:", error);
+    res.status(500).json({ error: "Erreur lors de l'envoi" });
   }
 }
