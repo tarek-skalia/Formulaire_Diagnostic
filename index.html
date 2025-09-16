@@ -50,6 +50,7 @@
       --skalia-navy:#211d3f;
       --page-bg: linear-gradient(to bottom right, var(--skalia-purple) 0%, var(--skalia-dark) 50%, var(--skalia-navy) 100%);
     }
+    /* Fond uniforme + anti-bounce + identique sur toutes les pages */
     html, body{
       min-height:100%;
       overscroll-behavior: none;
@@ -116,7 +117,7 @@
       <div class="relative z-10">
         <!-- Q1 -->
         <div class="mb-8 group">
-          <label class="block text-lg font-semibold font-montaser text-white mb-3 group-hover:text-skalia-light transition-colors">
+          <label class="block text-lg font-semibold font-montaser text-white mb-3">
             1. Quelle est la tâche répétitive qui vous fait perdre le plus de temps chaque semaine ?
             <span class="text-skalia-light">*</span>
           </label>
@@ -127,31 +128,28 @@
 
         <!-- Q2 -->
         <div class="mb-8 group">
-          <label class="block text-lg font-semibold font-montaser text-white mb-3 group-hover:text-skalia-light transition-colors">
+          <label class="block text-lg font-semibold font-montaser text-white mb-3">
             2. Combien de fois par semaine cette tâche est réalisée ?
             <span class="text-skalia-light">*</span>
           </label>
           <div class="relative">
-            <div class="picker-input bg-skalia-navy/50 border-2 border-skalia-light/50 rounded-xl backdrop-blur-sm px-4 py-3 cursor-pointer transition-all duration-300 hover:border-skalia-light hover:shadow-lg hover:shadow-skalia-light/20" data-picker="frequence_semaine">
+            <div class="picker-input bg-skalia-navy/50 border-2 border-skalia-light/50 rounded-xl backdrop-blur-sm px-4 py-3 cursor-pointer" data-picker="frequence_semaine">
               <span class="text-white font-montserrat" id="frequence_display">Sélectionner...</span>
-              <div class="absolute right-3 top-1/2 transform -translate-y-1/2">
-                <svg class="w-5 h-5 text-skalia-light transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-              </div>
             </div>
-            <div class="wheel-picker-modal hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 overflow-y-auto" id="frequencesemaine_modal">
+            <div class="wheel-picker-modal hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 overflow-y-auto" id="frequence_semaine_modal">
               <div class="min-h-dvh flex items-center justify-center p-4 py-8">
-                <div class="bg-gradient-to-br from-skalia-navy to-skalia-purple rounded-2xl p-6 w-full max-w-sm border-2 border-skalia-light/30 shadow-2xl my-8">
-                  <h3 class="text-white font-montserrat font-semibold text-center mb-4">Fréquence par semaine</h3>
+                <div class="bg-gradient-to-br from-skalia-navy to-skalia-purple rounded-2xl p-6 w-full max-w-sm">
+                  <h3 class="text-white text-center mb-4">Fréquence par semaine</h3>
                   <div class="wheel-picker-container">
-                    <div class="wheel-picker overflow-hidden relative">
+                    <div class="wheel-picker">
                       <div class="wheel-overlay"></div>
                       <div class="wheel-items" id="frequenceWheel"></div>
                       <div class="wheel-selection-indicator"></div>
                     </div>
                   </div>
                   <div class="flex gap-3 mt-6">
-                    <button type="button" class="flex-1 bg-skalia-medium/50 text-white py-2 px-4 rounded-lg font-montserrat hover:bg-skalia-medium/70 transition-colors" onclick="closePicker('frequence_semaine')">Annuler</button>
-                    <button type="button" class="flex-1 bg-gradient-to-r from-skalia-violet to-skalia-medium text-white py-2 px-4 rounded-lg font-montserrat hover:shadow-lg hover:shadow-skalia-light/20 transition-all" onclick="confirmPicker('frequence_semaine')">Valider</button>
+                    <button type="button" onclick="closePicker('frequence_semaine')" class="flex-1 bg-skalia-medium/50 text-white py-2 px-4 rounded-lg">Annuler</button>
+                    <button type="button" onclick="confirmPicker('frequence_semaine')" class="flex-1 bg-gradient-to-r from-skalia-violet to-skalia-medium text-white py-2 px-4 rounded-lg">Valider</button>
                   </div>
                 </div>
               </div>
@@ -162,32 +160,29 @@
 
         <!-- Q3 -->
         <div class="mb-8 group">
-          <label class="block text-lg font-semibold font-montaser text-white mb-3 group-hover:text-skalia-light transition-colors">
+          <label class="block text-lg font-semibold font-montaser text-white mb-3">
             3. Combien de temps prend cette tâche à chaque fois ?
             <span class="text-skalia-light">*</span>
           </label>
           <div class="flex gap-3">
             <div class="relative flex-1">
-              <div class="picker-input bg-skalia-navy/50 border-2 border-skalia-light/50 rounded-xl backdrop-blur-sm px-4 py-3 cursor-pointer transition-all duration-300 hover:border-skalia-light hover:shadow-lg hover:shadow-skalia-light/20" data-picker="duree_valeur">
+              <div class="picker-input bg-skalia-navy/50 border-2 border-skalia-light/50 rounded-xl px-4 py-3 cursor-pointer" data-picker="duree_valeur">
                 <span class="text-white font-montserrat" id="duree_display">Durée...</span>
-                <div class="absolute right-3 top-1/2 transform -translate-y-1/2">
-                  <svg class="w-5 h-5 text-skalia-light transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                </div>
               </div>
-              <div class="wheel-picker-modal hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 overflow-y-auto" id="dureevaleur_modal">
+              <div class="wheel-picker-modal hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50" id="duree_valeur_modal">
                 <div class="min-h-dvh flex items-center justify-center p-4 py-8">
-                  <div class="bg-gradient-to-br from-skalia-navy to-skalia-purple rounded-2xl p-6 w-full max-w-sm border-2 border-skalia-light/30 shadow-2xl my-8">
-                    <h3 class="text-white font-montserrat font-semibold text-center mb-4">Durée</h3>
+                  <div class="bg-gradient-to-br from-skalia-navy to-skalia-purple rounded-2xl p-6 w-full max-w-sm">
+                    <h3 class="text-white text-center mb-4">Durée</h3>
                     <div class="wheel-picker-container">
-                      <div class="wheel-picker overflow-hidden relative">
+                      <div class="wheel-picker">
                         <div class="wheel-overlay"></div>
                         <div class="wheel-items" id="dureeWheel"></div>
                         <div class="wheel-selection-indicator"></div>
                       </div>
                     </div>
                     <div class="flex gap-3 mt-6">
-                      <button type="button" class="flex-1 bg-skalia-medium/50 text-white py-2 px-4 rounded-lg font-montserrat hover:bg-skalia-medium/70 transition-colors" onclick="closePicker('duree_valeur')">Annuler</button>
-                      <button type="button" class="flex-1 bg-gradient-to-r from-skalia-violet to-skalia-medium text-white py-2 px-4 rounded-lg font-montserrat hover:shadow-lg hover:shadow-skalia-light/20 transition-all" onclick="confirmPicker('duree_valeur')">Valider</button>
+                      <button type="button" onclick="closePicker('duree_valeur')" class="flex-1 bg-skalia-medium/50 text-white py-2 px-4 rounded-lg">Annuler</button>
+                      <button type="button" onclick="confirmPicker('duree_valeur')" class="flex-1 bg-gradient-to-r from-skalia-violet to-skalia-medium text-white py-2 px-4 rounded-lg">Valider</button>
                     </div>
                   </div>
                 </div>
@@ -195,26 +190,23 @@
             </div>
 
             <div class="relative" style="width: 140px;">
-              <div class="picker-input bg-skalia-navy/50 border-2 border-skalia-light/50 rounded-xl backdrop-blur-sm px-4 py-3 cursor-pointer transition-all duration-300 hover:border-skalia-light hover:shadow-lg hover:shadow-skalia-light/20" data-picker="duree_unite">
+              <div class="picker-input bg-skalia-navy/50 border-2 border-skalia-light/50 rounded-xl px-4 py-3 cursor-pointer" data-picker="duree_unite">
                 <span class="text-white font-montserrat" id="unite_display">Unité...</span>
-                <div class="absolute right-3 top-1/2 transform -translate-y-1/2">
-                  <svg class="w-5 h-5 text-skalia-light transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                </div>
               </div>
-              <div class="wheel-picker-modal hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 overflow-y-auto" id="dureeunite_modal">
+              <div class="wheel-picker-modal hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50" id="duree_unite_modal">
                 <div class="min-h-dvh flex items-center justify-center p-4 py-8">
-                  <div class="bg-gradient-to-br from-skalia-navy to-skalia-purple rounded-2xl p-6 w-full max-w-sm border-2 border-skalia-light/30 shadow-2xl my-8">
-                    <h3 class="text-white font-montserrat font-semibold text-center mb-4">Unité de temps</h3>
+                  <div class="bg-gradient-to-br from-skalia-navy to-skalia-purple rounded-2xl p-6 w-full max-w-sm">
+                    <h3 class="text-white text-center mb-4">Unité de temps</h3>
                     <div class="wheel-picker-container">
-                      <div class="wheel-picker overflow-hidden relative">
+                      <div class="wheel-picker">
                         <div class="wheel-overlay"></div>
                         <div class="wheel-items" id="uniteWheel"></div>
                         <div class="wheel-selection-indicator"></div>
                       </div>
                     </div>
                     <div class="flex gap-3 mt-6">
-                      <button type="button" class="flex-1 bg-skalia-medium/50 text-white py-2 px-4 rounded-lg font-montserrat hover:bg-skalia-medium/70 transition-colors" onclick="closePicker('duree_unite')">Annuler</button>
-                      <button type="button" class="flex-1 bg-gradient-to-r from-skalia-violet to-skalia-medium text-white py-2 px-4 rounded-lg font-montserrat hover:shadow-lg hover:shadow-skalia-light/20 transition-all" onclick="confirmPicker('duree_unite')">Valider</button>
+                      <button type="button" onclick="closePicker('duree_unite')" class="flex-1 bg-skalia-medium/50 text-white py-2 px-4 rounded-lg">Annuler</button>
+                      <button type="button" onclick="confirmPicker('duree_unite')" class="flex-1 bg-gradient-to-r from-skalia-violet to-skalia-medium text-white py-2 px-4 rounded-lg">Valider</button>
                     </div>
                   </div>
                 </div>
@@ -225,33 +217,31 @@
           <input type="hidden" name="duree_valeur" required>
           <input type="hidden" name="duree_unite" required>
         </div>
+
         <!-- Q4 -->
         <div class="mb-8 group">
-          <label class="block text-lg font-semibold font-montaser text-white mb-3 group-hover:text-skalia-light transition-colors">
+          <label class="block text-lg font-semibold font-montaser text-white mb-3">
             4. Combien de personnes de votre équipe y consacrent du temps ?
             <span class="text-skalia-light">*</span>
           </label>
           <div class="relative">
-            <div class="picker-input bg-skalia-navy/50 border-2 border-skalia-light/50 rounded-xl backdrop-blur-sm px-4 py-3 cursor-pointer transition-all duration-300 hover:border-skalia-light hover:shadow-lg hover:shadow-skalia-light/20" data-picker="nombre_personnes">
+            <div class="picker-input bg-skalia-navy/50 border-2 border-skalia-light/50 rounded-xl px-4 py-3 cursor-pointer" data-picker="nombre_personnes">
               <span class="text-white font-montserrat" id="personnes_display">Nombre de personnes...</span>
-              <div class="absolute right-3 top-1/2 transform -translate-y-1/2">
-                <svg class="w-5 h-5 text-skalia-light transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-              </div>
             </div>
-            <div class="wheel-picker-modal hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 overflow-y-auto" id="nombrepersonnes_modal">
+            <div class="wheel-picker-modal hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50" id="nombre_personnes_modal">
               <div class="min-h-dvh flex items-center justify-center p-4 py-8">
-                <div class="bg-gradient-to-br from-skalia-navy to-skalia-purple rounded-2xl p-6 w-full max-w-sm border-2 border-skalia-light/30 shadow-2xl my-8">
-                  <h3 class="text-white font-montserrat font-semibold text-center mb-4">Nombre de personnes</h3>
+                <div class="bg-gradient-to-br from-skalia-navy to-skalia-purple rounded-2xl p-6 w-full max-w-sm">
+                  <h3 class="text-white text-center mb-4">Nombre de personnes</h3>
                   <div class="wheel-picker-container">
-                    <div class="wheel-picker overflow-hidden relative">
+                    <div class="wheel-picker">
                       <div class="wheel-overlay"></div>
                       <div class="wheel-items" id="personnesWheel"></div>
                       <div class="wheel-selection-indicator"></div>
                     </div>
                   </div>
                   <div class="flex gap-3 mt-6">
-                    <button type="button" class="flex-1 bg-skalia-medium/50 text-white py-2 px-4 rounded-lg font-montserrat hover:bg-skalia-medium/70 transition-colors" onclick="closePicker('nombre_personnes')">Annuler</button>
-                    <button type="button" class="flex-1 bg-gradient-to-r from-skalia-violet to-skalia-medium text-white py-2 px-4 rounded-lg font-montserrat hover:shadow-lg hover:shadow-skalia-light/20 transition-all" onclick="confirmPicker('nombre_personnes')">Valider</button>
+                    <button type="button" onclick="closePicker('nombre_personnes')" class="flex-1 bg-skalia-medium/50 text-white py-2 px-4 rounded-lg">Annuler</button>
+                    <button type="button" onclick="confirmPicker('nombre_personnes')" class="flex-1 bg-gradient-to-r from-skalia-violet to-skalia-medium text-white py-2 px-4 rounded-lg">Valider</button>
                   </div>
                 </div>
               </div>
@@ -262,60 +252,52 @@
 
         <!-- Q5 -->
         <div class="mb-8 group">
-          <label class="block text-lg font-semibold font-montaser text-white mb-3 group-hover:text-skalia-light transition-colors">
-            5. Cette tâche se fait-elle toujours de la même façon (répétitive, sans trop de variations) ?
+          <label class="block text-lg font-semibold font-montaser text-white mb-3">
+            5. Cette tâche se fait-elle toujours de la même façon ?
             <span class="text-skalia-light">*</span>
           </label>
           <div class="space-y-3">
-            <label class="flex items-center p-4 bg-skalia-navy/30 border-2 border-skalia-light/60 rounded-xl hover:bg-skalia-medium/20 hover:border-skalia-light cursor-pointer transition-all duration-300 backdrop-blur-sm">
-              <input type="radio" name="repetitivite" value="toujours_pareil" required class="accent-skalia-yellow focus:ring-skalia-yellow focus:ring-2">
-              <span class="ml-3 text-white font-montserrat">Oui, toujours pareil</span>
+            <label class="flex items-center p-4 bg-skalia-navy/30 rounded-xl cursor-pointer">
+              <input type="radio" name="repetitivite" value="toujours_pareil" required class="accent-skalia-yellow">
+              <span class="ml-3 text-white">Oui, toujours pareil</span>
             </label>
-            <label class="flex items-center p-4 bg-skalia-navy/30 border-2 border-skalia-light/60 rounded-xl hover:bg-skalia-medium/20 hover:border-skalia-light cursor-pointer transition-all duration-300 backdrop-blur-sm">
-              <input type="radio" name="repetitivite" value="souvent_pareil" required class="accent-skalia-yellow focus:ring-skalia-yellow focus:ring-2">
-              <span class="ml-3 text-white font-montserrat">Souvent pareil (± 80%)</span>
+            <label class="flex items-center p-4 bg-skalia-navy/30 rounded-xl cursor-pointer">
+              <input type="radio" name="repetitivite" value="souvent_pareil" required class="accent-skalia-yellow">
+              <span class="ml-3 text-white">Souvent pareil (± 80%)</span>
             </label>
-            <label class="flex items-center p-4 bg-skalia-navy/30 border-2 border-skalia-light/60 rounded-xl hover:bg-skalia-medium/20 hover:border-skalia-light cursor-pointer transition-all duration-300 backdrop-blur-sm">
-              <input type="radio" name="repetitivite" value="ca_change_beaucoup" required class="accent-skalia-yellow focus:ring-skalia-yellow focus:ring-2">
-              <span class="ml-3 text-white font-montserrat">Ça change beaucoup</span>
+            <label class="flex items-center p-4 bg-skalia-navy/30 rounded-xl cursor-pointer">
+              <input type="radio" name="repetitivite" value="ca_change_beaucoup" required class="accent-skalia-yellow">
+              <span class="ml-3 text-white">Ça change beaucoup</span>
             </label>
           </div>
         </div>
 
         <!-- Q6 -->
         <div class="mb-8 group">
-          <label class="block text-lg font-semibold font-montaser text-white mb-3 group-hover:text-skalia-light transition-colors">
-            6. Votre adresse mail pour recevoir votre rapport personnalisé
-            <span class="text-skalia-light">*</span>
+          <label class="block text-lg font-semibold font-montaser text-white mb-3">
+            6. Votre adresse mail *
           </label>
           <input type="email" name="email" required
-                 class="w-full px-4 py-3 bg-skalia-navy/50 border-2 border-skalia-light/50 rounded-xl focus:ring-2 focus:ring-skalia-yellow focus:border-skalia-yellow focus:outline-none font-montserrat text-white placeholder-skalia-light/60 backdrop-blur-sm"
+                 class="w-full px-4 py-3 bg-skalia-navy/50 border-2 border-skalia-light/50 rounded-xl text-white"
                  placeholder="votre.email@entreprise.com">
         </div>
 
         <!-- Q7 -->
         <div class="mb-8 group">
-          <label class="block text-lg font-semibold font-montaser text-white mb-3 group-hover:text-skalia-light transition-colors">
-            7. Votre prénom
-            <span class="text-skalia-light">*</span>
+          <label class="block text-lg font-semibold font-montaser text-white mb-3">
+            7. Votre prénom *
           </label>
           <input type="text" name="prenom" required
-                 class="w-full px-4 py-3 bg-skalia-navy/50 border-2 border-skalia-light/50 rounded-xl focus:ring-2 focus:ring-skalia-yellow focus:border-skalia-yellow focus:outline-none font-montserrat text-white placeholder-skalia-light/60 backdrop-blur-sm"
+                 class="w-full px-4 py-3 bg-skalia-navy/50 border-2 border-skalia-light/50 rounded-xl text-white"
                  placeholder="Votre prénom">
         </div>
 
         <!-- Submit -->
         <div class="text-center pt-6">
           <button type="submit"
-                  class="relative bg-gradient-to-r from-skalia-violet via-skalia-medium to-skalia-dark hover:from-skalia-dark hover:via-skalia-violet hover:to-skalia-medium text-white font-bold font-spartan py-5 px-10 rounded-2xl transition-all duration-500 text-lg shadow-2xl hover:shadow-skalia-light/25 transform hover:-translate-y-2 border-2 border-skalia-light/50 hover:border-skalia-light overflow-hidden group">
-            <span class="relative z-10">Recevoir mon rapport personnalisé</span>
-            <div class="absolute inset-0 bg-gradient-to-r from-skalia-yellow/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  class="bg-gradient-to-r from-skalia-violet via-skalia-medium to-skalia-dark text-white font-bold py-5 px-10 rounded-2xl">
+            Recevoir mon rapport personnalisé
           </button>
-
-          <div class="flex items-center justify-center mt-4 text-skalia-light/80">
-            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/></svg>
-            <span class="text-sm font-montserrat">Vos données sont sécurisées</span>
-          </div>
         </div>
       </div>
     </form>
@@ -323,62 +305,50 @@
     <div id="thankYouPage" class="hidden fixed inset-0 bg-gradient-to-br from-skalia-purple via-skalia-dark to-skalia-navy z-50 overflow-y-auto">
       <div class="min-h-dvh flex items-start justify-center p-4 pt-6">
         <div class="max-w-2xl w-full mt-4 mb-8">
-          <!-- ENCADRÉ (card) -->
-          <div class="bg-gradient-to-br from-skalia-navy/80 to-skalia-purple/80 backdrop-blur-lg rounded-2xl shadow-2xl p-8 border border-skalia-light/50 relative overflow-hidden" style="box-shadow:0 0 80px rgba(197,155,253,.5),0 25px 50px -12px rgba(0,0,0,.25);">
-            <div class="absolute inset-0 bg-gradient-to-tr from-skalia-light/8 via-transparent to-skalia-violet/12 pointer-events-none"></div>
-            <div class="absolute -top-32 -left-32 w-64 h-64 bg-skalia-light/15 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="absolute -bottom-32 -right-32 w-64 h-64 bg-skalia-medium/20 rounded-full blur-3xl pointer-events-none"></div>
-
+          <!-- ENCADRÉ -->
+          <div class="bg-gradient-to-br from-skalia-navy/80 to-skalia-purple/80 backdrop-blur-lg rounded-2xl shadow-2xl p-8 border border-skalia-light/50 relative overflow-hidden">
             <div class="relative z-10 text-center">
-              <!-- Icône de succès -->
-              <div class="w-20 h-20 bg-gradient-to-r from-skalia-yellow to-skalia-light rounded-full flex items-center justify-center mx-auto mb-8 shadow-2xl">
+              <!-- Icône -->
+              <div class="w-20 h-20 bg-gradient-to-r from-skalia-yellow to-skalia-light rounded-full flex items-center justify-center mx-auto mb-8">
                 <svg class="w-10 h-10 text-skalia-purple" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                 </svg>
               </div>
 
               <!-- Titre -->
-              <h2 class="text-4xl font-bold font-spartan text-white mb-8 bg-gradient-to-r from-white to-skalia-light bg-clip-text text-transparent">
-                Merci pour votre participation !
-              </h2>
+              <h2 class="text-4xl font-bold font-spartan text-white mb-8">Merci pour votre participation !</h2>
 
-              <!-- Message principal -->
-              <div class="bg-gradient-to-r from-skalia-light/20 to-skalia-violet/20 border border-skalia-light/40 rounded-2xl p-6 mb-8 backdrop-blur-sm">
-                <p class="text-xl text-white mb-0 font-montserrat leading-relaxed">
-                  Votre rapport personnalisé d'analyse d'automatisation va arriver
+              <!-- Message -->
+              <div class="bg-gradient-to-r from-skalia-light/20 to-skalia-violet/20 border border-skalia-light/40 rounded-2xl p-6 mb-8">
+                <p class="text-xl text-white mb-0 font-montserrat">
+                  Votre rapport personnalisé va arriver
                   <span class="text-skalia-yellow font-semibold">d'une minute à l'autre</span>
                   dans votre boîte mail.
                 </p>
               </div>
 
               <!-- Rappel -->
-              <div class="bg-skalia-yellow/20 border border-skalia-yellow/50 rounded-2xl p-6 mb-8 backdrop-blur-sm">
-                <div class="flex items-center justify-center mb-3">
-                  <svg class="w-6 h-6 text-skalia-yellow mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                  </svg>
-                  <span class="text-skalia-yellow font-semibold font-montserrat">Rappel important</span>
-                </div>
+              <div class="bg-skalia-yellow/20 border border-skalia-yellow/50 rounded-2xl p-6 mb-8">
                 <p class="text-white font-montserrat">
-                  N'oubliez pas de vérifier vos <strong>mails indésirables</strong> si vous ne recevez pas le rapport dans les prochaines minutes.
+                  N'oubliez pas de vérifier vos <strong>mails indésirables</strong> si vous ne recevez pas le rapport.
                 </p>
               </div>
 
               <!-- Infos -->
-              <div class="text-left bg-gradient-to-br from-skalia-violet/30 to-skalia-medium/30 rounded-2xl p-6 border border-skalia-light/50 backdrop-blur-sm">
-                <h3 class="text-lg font-semibold text-skalia-yellow mb-4 font-montserrat">Votre rapport contiendra :</h3>
+              <div class="text-left bg-gradient-to-br from-skalia-violet/30 to-skalia-medium/30 rounded-2xl p-6 border border-skalia-light/50">
+                <h3 class="text-lg font-semibold text-skalia-yellow mb-4">Votre rapport contiendra :</h3>
                 <ul class="space-y-3 text-white font-montserrat">
                   <li class="flex items-start">
-                    <div class="w-2 h-2 bg-skalia-yellow rounded-full mr-3 mt-2 flex-shrink-0"></div>
+                    <div class="w-2 h-2 bg-skalia-yellow rounded-full mr-3 mt-2"></div>
                     <span>Un résumé détaillé de votre situation actuelle</span>
                   </li>
                   <li class="flex items-start">
-                    <div class="w-2 h-2 bg-skalia-yellow rounded-full mr-3 mt-2 flex-shrink-0"></div>
-                    <span>Une action concrète à mettre en place dès aujourd'hui pour une amélioration rapide</span>
+                    <div class="w-2 h-2 bg-skalia-yellow rounded-full mr-3 mt-2"></div>
+                    <span>Une action concrète à mettre en place dès aujourd'hui</span>
                   </li>
                   <li class="flex items-start">
-                    <div class="w-2 h-2 bg-skalia-yellow rounded-full mr-3 mt-2 flex-shrink-0"></div>
-                    <span>Le temps actuellement perdu sur vos tâches répétitives manuelles</span>
+                    <div class="w-2 h-2 bg-skalia-yellow rounded-full mr-3 mt-2"></div>
+                    <span>Le temps actuellement perdu sur vos tâches répétitives</span>
                   </li>
                 </ul>
               </div>
@@ -398,18 +368,124 @@
       <p>© 2024 Skalia - Automatisation intelligente pour votre entreprise</p>
     </div>
   </div>
-
   <script>
     const STORAGE_KEY = 'skalia_form_submitted_v1';
-    const WEBHOOK_URL = "/api/submit"; // 👉 proxy Vercel
+    const WEBHOOK_URL = "/api/submit"; // proxy Vercel
 
+    /* ----- WheelPicker ----- */
+    class WheelPicker {
+      constructor(wheelElement, options, pickerName) {
+        this.wheelElement = wheelElement;
+        this.wheelItems = wheelElement.querySelector('.wheel-items');
+        this.options = options;
+        this.pickerName = pickerName;
+        this.currentIndex = 0;
+        this.itemHeight = 40;
+        this.init();
+      }
+      init() {
+        this.createItems();
+        this.currentIndex = 0;
+        this.setTransform(60);
+        this.updateSelection();
+      }
+      createItems() {
+        this.wheelItems.innerHTML = '';
+        this.options.forEach((o,i)=>{
+          const d=document.createElement('div');
+          d.className='wheel-item';
+          d.textContent=o.label;
+          d.dataset.value=o.value;
+          this.wheelItems.appendChild(d);
+        });
+      }
+      setTransform(v) {
+        const max=60, min=60-(this.options.length-1)*this.itemHeight;
+        const c=Math.max(min,Math.min(max,v));
+        this.wheelItems.style.transform=`translateY(${c}px)`;
+      }
+      updateSelection() {
+        this.wheelItems.querySelectorAll('.wheel-item').forEach((el,i)=>
+          el.classList.toggle('selected', i===this.currentIndex));
+      }
+      getSelectedValue(){ return this.options[this.currentIndex]; }
+    }
+
+    const pickers = {};
+
+    document.addEventListener('DOMContentLoaded', function(){
+      const frequenceOptions = Array.from({length:50}, (_,i)=>({value:i+1, label:`${i+1} fois`}));
+      const dureeOptions = Array.from({length:100}, (_,i)=>({value:i+1, label:String(i+1)}));
+      const uniteOptions = [ {value:'minutes', label:'minute(s)'}, {value:'heures', label:'heure(s)'}, {value:'jours', label:'jour(s)'} ];
+      const personnesOptions = Array.from({length:100}, (_,i)=>({value:i+1, label:`${i+1} personne${i+1>1?'s':''}`}));
+
+      pickers.frequence_semaine = new WheelPicker(document.getElementById('frequenceWheel').closest('.wheel-picker'), frequenceOptions, 'frequence_semaine');
+      pickers.duree_valeur      = new WheelPicker(document.getElementById('dureeWheel').closest('.wheel-picker'), dureeOptions, 'duree_valeur');
+      pickers.duree_unite       = new WheelPicker(document.getElementById('uniteWheel').closest('.wheel-picker'), uniteOptions, 'duree_unite');
+      pickers.nombre_personnes  = new WheelPicker(document.getElementById('personnesWheel').closest('.wheel-picker'), personnesOptions, 'nombre_personnes');
+
+      document.querySelectorAll('.picker-input').forEach(input=>{
+        input.addEventListener('click', function(){
+          const name = this.dataset.picker;
+          openPicker(name);
+        });
+      });
+    });
+
+    // ✅ Corrections ici
+    function openPicker(pickerName){
+      const modal = document.getElementById(`${pickerName}_modal`);
+      if(!modal) return;
+      modal.classList.remove('hidden');
+    }
+    function closePicker(pickerName){
+      const modal = document.getElementById(`${pickerName}_modal`);
+      if(!modal) return;
+      modal.classList.add('hidden');
+    }
+    function confirmPicker(pickerName){
+      const picker = pickers[pickerName];
+      if(picker){
+        const selected = picker.getSelectedValue();
+        const hiddenInput = document.querySelector(`input[name="${pickerName}"]`);
+        if (hiddenInput && selected) hiddenInput.value = selected.value;
+
+        let displayId = pickerName + '_display';
+        if (pickerName==='duree_unite') displayId='unite_display';
+        if (pickerName==='duree_valeur') displayId='duree_display';
+        if (pickerName==='nombre_personnes') displayId='personnes_display';
+        if (pickerName==='frequence_semaine') displayId='frequence_display';
+
+        const displayEl = document.getElementById(displayId);
+        if(displayEl && selected){
+          displayEl.textContent = selected.label;
+          displayEl.parentElement.style.borderColor = 'rgba(197,155,253,.8)';
+          displayEl.parentElement.style.boxShadow   = '0 0 15px rgba(197,155,253,.3)';
+        }
+      }
+      closePicker(pickerName);
+    }
+
+    // Validation
+    function validateForm(){
+      const errors=[];
+      if(!document.querySelector('textarea[name="tache_repetitive"]').value.trim()) errors.push("Question 1 manquante");
+      if(!document.querySelector('input[name="frequence_semaine"]').value) errors.push("Question 2 manquante");
+      if(!document.querySelector('input[name="duree_valeur"]').value || !document.querySelector('input[name="duree_unite"]').value) errors.push("Question 3 manquante");
+      if(!document.querySelector('input[name="nombre_personnes"]').value) errors.push("Question 4 manquante");
+      if(!document.querySelector('input[name="repetitivite"]:checked')) errors.push("Question 5 manquante");
+      const email=document.querySelector('input[name="email"]').value.trim();
+      if(!email) errors.push("Email manquant");
+      const prenom=document.querySelector('input[name="prenom"]').value.trim();
+      if(!prenom) errors.push("Prénom manquant");
+      return errors;
+    }
+
+    // Soumission formulaire
     document.getElementById('skaliaForm').addEventListener('submit', async function(e){
       e.preventDefault();
       const errors=validateForm();
-      if(errors.length){
-        showErrorMessage(errors[0]);
-        return;
-      }
+      if(errors.length){ alert(errors[0]); return; }
 
       const formData = Object.fromEntries(new FormData(this).entries());
 
@@ -426,14 +502,10 @@
         localStorage.setItem(STORAGE_KEY,'1');
         document.getElementById('headerCard')?.classList.add('hidden');
         document.getElementById('skaliaForm')?.classList.add('hidden');
-        const thankYouPage=document.getElementById('thankYouPage');
-        thankYouPage.classList.remove('hidden');
+        document.getElementById('thankYouPage').classList.remove('hidden');
         document.body.classList.add('thanks-open');
-        window.scrollTo({top:0,left:0,behavior:'auto'});
-        thankYouPage.scrollTop=0;
-
       } catch (err) {
-        showErrorMessage("Une erreur est survenue, merci de réessayer.");
+        alert("Erreur lors de l'envoi, merci de réessayer.");
         console.error("Erreur proxy:", err);
       }
     });
