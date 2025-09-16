@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Formulaire d'Analyse - Skalia</title>
+
+  <!-- Anti-flash AVANT paint : si déjà soumis, on force l'état "merci" dès le head -->
+  <script>
+    (function () {
+      try {
+        if (localStorage.getItem('skalia_form_submitted_v1') === '1') {
+          document.documentElement.classList.add('already-submitted');
+        }
+      } catch (e) {}
+    })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'skalia-purple': '#1f0240',
+            'skalia-violet': '#572794',
+            'skalia-dark': '#2f0075',
+            'skalia-medium': '#4f1b9b',
+            'skalia-navy': '#211d3f',
+            'skalia-light': '#c59bfd',
+            'skalia-yellow': '#ffde59'
+          },
+          fontFamily: {
+            'spartan': ['League Spartan', 'sans-serif'],
+            'montserrat': ['Montserrat', 'sans-serif'],
+            'montaser': ['Noto Sans Arabic', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root{
+      --skalia-purple:#1f0240;
+      --skalia-dark:#2f0075;
+      --skalia-navy:#211d3f;
+      --page-bg: linear-gradient(to bottom right, var(--skalia-purple) 0%, var(--skalia-dark) 50%, var(--skalia-navy) 100%);
+    }
+    html, body{
+      min-height:100%;
+      overscroll-behavior: none;
+      background: var(--page-bg);
+    }
+    body.thanks-open{ overflow:hidden; }
+    html.already-submitted #headerCard,
+    html.already-submitted #skaliaForm { display:none !important; }
+    html.already-submitted #thankYouPage { display:block !important; }
+    #thankYouPage{ overscroll-behavior: contain; }
+
+    .accent-skalia-yellow{ accent-color:#ffde59; }
+
+    @keyframes slideDown { from{transform:translate(-50%,-100%);opacity:0;} to{transform:translate(-50%,0);opacity:1;} }
+    @keyframes slideUp   { from{transform:translate(-50%,0);opacity:1;}   to{transform:translate(-50%,-100%);opacity:0;} }
+
+    .wheel-picker-container{ position:relative; height:160px; margin-bottom:10px; }
+    .wheel-picker{ position:relative; height:160px; overflow:hidden; cursor:grab; user-select:none; }
+    .wheel-picker:active{ cursor:grabbing; }
+    .wheel-items{ position:absolute; width:100%; transition:transform .3s cubic-bezier(.25,.46,.45,.94); }
+    .wheel-item{ height:40px; display:flex; align-items:center; justify-content:center; font-family:'Montserrat',sans-serif; font-size:16px; color:rgba(197,155,253,.6); transition:all .3s ease; }
+    .wheel-item.selected{ color:#fff; font-weight:600; font-size:18px; text-shadow:0 0 10px rgba(197,155,253,.5); }
+    .wheel-overlay{ position:absolute; inset:0; background:linear-gradient(to bottom, rgba(31,2,64,.9) 0%, transparent 25%, transparent 75%, rgba(31,2,64,.9) 100%); pointer-events:none; z-index:2;}
+    .wheel-selection-indicator{ position:absolute; top:60px; left:0; right:0; height:40px; border-top:2px solid rgba(197,155,253,.8); border-bottom:2px solid rgba(197,155,253,.8); background:rgba(197,155,253,.1); pointer-events:none; z-index:1;}
+  </style>
+</head>
+
+<body class="bg-gradient-to-br from-skalia-purple via-skalia-dark to-skalia-navy min-h-screen py-8 font-montserrat relative overflow-x-hidden">
+  <div class="max-w-2xl mx-auto px-4 relative z-10">
+    <!-- Header -->
+    <div id="headerCard" class="bg-gradient-to-r from-skalia-purple/90 to-skalia-violet/90 backdrop-blur-sm rounded-2xl shadow-2xl p-8 mb-6 border border-skalia-light/40 relative overflow-hidden" style="box-shadow:0 0 60px rgba(197,155,253,.4),0 25px 50px -12px rgba(0,0,0,.25);">
+      <div class="absolute inset-0 bg-gradient-to-br from-skalia-light/10 via-transparent to-skalia-yellow/10 pointer-events-none"></div>
+      <div class="absolute -top-20 -left-20 w-40 h-40 bg-skalia-light/20 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -bottom-20 -right-20 w-40 h-40 bg-skalia-violet/30 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="relative z-10">
+        <div class="flex flex-col items-center justify-center mb-6">
+          <img src="https://lh3.googleusercontent.com/d/12YQegT7xzFlUm4C81QxWCRhLgtIMpB74"
+               alt="Logo Skalia"
+               class="h-20 w-auto filter drop-shadow-lg mb-1"
+               onerror="this.style.display='none'; document.getElementById('fallbackLogo').style.display='flex';"
+               crossorigin="anonymous">
+          <div id="fallbackLogo" class="hidden items-center">
+            <div class="w-16 h-16 bg-gradient-to-br from-skalia-violet via-skalia-medium to-skalia-dark rounded-xl flex items-center justify-center mr-4 shadow-xl">
+              <span class="text-white font-bold text-2xl font-spartan">S</span>
+            </div>
+            <span class="text-3xl font-bold font-spartan text-white">SKALIA</span>
+          </div>
+          <h2 class="text-lg font-bold font-spartan text-white tracking-wider">Skalia</h2>
+        </div>
+        <h1 class="text-4xl font-bold font-spartan text-white text-center mb-4 bg-gradient-to-r from-white to-skalia-light bg-clip-text text-transparent">
+          Diagnostic express personnalisé
+        </h1>
+        <p class="text-skalia-light text-center text-lg font-montserrat opacity-90">
+          Répondez aux questions pour recevoir un rapport personnalisé avec le temps récupérable sur votre tâche la plus chronophage.
+        </p>
+      </div>
+    </div>
+    <!-- Formulaire -->
+    <form id="skaliaForm" class="bg-gradient-to-br from-skalia-navy/80 to-skalia-purple/80 backdrop-blur-lg rounded-2xl shadow-2xl p-8 border border-skalia-light/50 relative overflow-hidden" style="box-shadow:0 0 80px rgba(197,155,253,.5),0 25px 50px -12px rgba(0,0,0,.25);">
+      <div class="absolute inset-0 bg-gradient-to-tr from-skalia-light/8 via-transparent to-skalia-violet/12 pointer-events-none"></div>
+      <div class="absolute -top-32 -left-32 w-64 h-64 bg-skalia-light/15 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -bottom-32 -right-32 w-64 h-64 bg-skalia-medium/20 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="relative z-10">
+        <!-- Q1 -->
+        <div class="mb-8 group">
+          <label class="block text-lg font-semibold font-montaser text-white mb-3 group-hover:text-skalia-light transition-colors">
+            1. Quelle est la tâche répétitive qui vous fait perdre le plus de temps chaque semaine ?
+            <span class="text-skalia-light">*</span>
+          </label>
+          <textarea name="tache_repetitive" required rows="3"
+            class="w-full px-4 py-3 bg-skalia-navy/50 border-2 border-skalia-light/50 rounded-xl focus:ring-2 focus:ring-skalia-yellow focus:border-skalia-yellow focus:outline-none resize-none font-montserrat text-white placeholder-skalia-light/60 backdrop-blur-sm"
+            placeholder="Décrivez la tâche qui vous prend le plus de temps..."></textarea>
+        </div>
+
+        <!-- Q2 -->
+        <div class="mb-8 group">
+          <label class="block text-lg font-semibold font-montaser text-white mb-3 group-hover:text-skalia-light transition-colors">
+            2. Combien de fois par semaine cette tâche est réalisée ?
+            <span class="text-skalia-light">*</span>
+          </label>
+          <div class="relative">
+            <div class="picker-input bg-skalia-navy/50 border-2 border-skalia-light/50 rounded-xl backdrop-blur-sm px-4 py-3 cursor-pointer transition-all duration-300 hover:border-skalia-light hover:shadow-lg hover:shadow-skalia-light/20" data-picker="frequence_semaine">
+              <span class="text-white font-montserrat" id="frequence_display">Sélectionner...</span>
+              <div class="absolute right-3 top-1/2 transform -translate-y-1/2">
+                <svg class="w-5 h-5 text-skalia-light transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+              </div>
+            </div>
+            <div class="wheel-picker-modal hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 overflow-y-auto" id="frequencesemaine_modal">
+              <div class="min-h-dvh flex items-center justify-center p-4 py-8">
+                <div class="bg-gradient-to-br from-skalia-navy to-skalia-purple rounded-2xl p-6 w-full max-w-sm border-2 border-skalia-light/30 shadow-2xl my-8">
+                  <h3 class="text-white font-montserrat font-semibold text-center mb-4">Fréquence par semaine</h3>
+                  <div class="wheel-picker-container">
+                    <div class="wheel-picker overflow-hidden relative">
+                      <div class="wheel-overlay"></div>
+                      <div class="wheel-items" id="frequenceWheel"></div>
+                      <div class="wheel-selection-indicator"></div>
+                    </div>
+                  </div>
+                  <div class="flex gap-3 mt-6">
+                    <button type="button" class="flex-1 bg-skalia-medium/50 text-white py-2 px-4 rounded-lg font-montserrat hover:bg-skalia-medium/70 transition-colors" onclick="closePicker('frequence_semaine')">Annuler</button>
+                    <button type="button" class="flex-1 bg-gradient-to-r from-skalia-violet to-skalia-medium text-white py-2 px-4 rounded-lg font-montserrat hover:shadow-lg hover:shadow-skalia-light/20 transition-all" onclick="confirmPicker('frequence_semaine')">Valider</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <input type="hidden" name="frequence_semaine" required>
+        </div>
+
+        <!-- Q3 -->
+        <div class="mb-8 group">
+          <label class="block text-lg font-semibold font-montaser text-white mb-3 group-hover:text-skalia-light transition-colors">
+            3. Combien de temps prend cette tâche à chaque fois ?
+            <span class="text-skalia-light">*</span>
+          </label>
+          <div class="flex gap-3">
+            <div class="relative flex-1">
+              <div class="picker-input bg-skalia-navy/50 border-2 border-skalia-light/50 rounded-xl backdrop-blur-sm px-4 py-3 cursor-pointer transition-all duration-300 hover:border-skalia-light hover:shadow-lg hover:shadow-skalia-light/20" data-picker="duree_valeur">
+                <span class="text-white font-montserrat" id="duree_display">Durée...</span>
+                <div class="absolute right-3 top-1/2 transform -translate-y-1/2">
+                  <svg class="w-5 h-5 text-skalia-light transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </div>
+              </div>
+              <div class="wheel-picker-modal hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 overflow-y-auto" id="dureevaleur_modal">
+                <div class="min-h-dvh flex items-center justify-center p-4 py-8">
+                  <div class="bg-gradient-to-br from-skalia-navy to-skalia-purple rounded-2xl p-6 w-full max-w-sm border-2 border-skalia-light/30 shadow-2xl my-8">
+                    <h3 class="text-white font-montserrat font-semibold text-center mb-4">Durée</h3>
+                    <div class="wheel-picker-container">
+                      <div class="wheel-picker overflow-hidden relative">
+                        <div class="wheel-overlay"></div>
+                        <div class="wheel-items" id="dureeWheel"></div>
+                        <div class="wheel-selection-indicator"></div>
+                      </div>
+                    </div>
+                    <div class="flex gap-3 mt-6">
+                      <button type="button" class="flex-1 bg-skalia-medium/50 text-white py-2 px-4 rounded-lg font-montserrat hover:bg-skalia-medium/70 transition-colors" onclick="closePicker('duree_valeur')">Annuler</button>
+                      <button type="button" class="flex-1 bg-gradient-to-r from-skalia-violet to-skalia-medium text-white py-2 px-4 rounded-lg font-montserrat hover:shadow-lg hover:shadow-skalia-light/20 transition-all" onclick="confirmPicker('duree_valeur')">Valider</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="relative" style="width: 140px;">
+              <div class="picker-input bg-skalia-navy/50 border-2 border-skalia-light/50 rounded-xl backdrop-blur-sm px-4 py-3 cursor-pointer transition-all duration-300 hover:border-skalia-light hover:shadow-lg hover:shadow-skalia-light/20" data-picker="duree_unite">
+                <span class="text-white font-montserrat" id="unite_display">Unité...</span>
+                <div class="absolute right-3 top-1/2 transform -translate-y-1/2">
+                  <svg class="w-5 h-5 text-skalia-light transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </div>
+              </div>
+              <div class="wheel-picker-modal hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 overflow-y-auto" id="dureeunite_modal">
+                <div class="min-h-dvh flex items-center justify-center p-4 py-8">
+                  <div class="bg-gradient-to-br from-skalia-navy to-skalia-purple rounded-2xl p-6 w-full max-w-sm border-2 border-skalia-light/30 shadow-2xl my-8">
+                    <h3 class="text-white font-montserrat font-semibold text-center mb-4">Unité de temps</h3>
+                    <div class="wheel-picker-container">
+                      <div class="wheel-picker overflow-hidden relative">
+                        <div class="wheel-overlay"></div>
+                        <div class="wheel-items" id="uniteWheel"></div>
+                        <div class="wheel-selection-indicator"></div>
+                      </div>
+                    </div>
+                    <div class="flex gap-3 mt-6">
+                      <button type="button" class="flex-1 bg-skalia-medium/50 text-white py-2 px-4 rounded-lg font-montserrat hover:bg-skalia-medium/70 transition-colors" onclick="closePicker('duree_unite')">Annuler</button>
+                      <button type="button" class="flex-1 bg-gradient-to-r from-skalia-violet to-skalia-medium text-white py-2 px-4 rounded-lg font-montserrat hover:shadow-lg hover:shadow-skalia-light/20 transition-all" onclick="confirmPicker('duree_unite')">Valider</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <input type="hidden" name="duree_valeur" required>
+          <input type="hidden" name="duree_unite" required>
+        </div>
+        <!-- Q4 -->
+        <div class="mb-8 group">
+          <label class="block text-lg font-semibold font-montaser text-white mb-3 group-hover:text-skalia-light transition-colors">
+            4. Combien de personnes de votre équipe y consacrent du temps ?
+            <span class="text-skalia-light">*</span>
+          </label>
+          <div class="relative">
+            <div class="picker-input bg-skalia-navy/50 border-2 border-skalia-light/50 rounded-xl backdrop-blur-sm px-4 py-3 cursor-pointer transition-all duration-300 hover:border-skalia-light hover:shadow-lg hover:shadow-skalia-light/20" data-picker="nombre_personnes">
+              <span class="text-white font-montserrat" id="personnes_display">Nombre de personnes...</span>
+              <div class="absolute right-3 top-1/2 transform -translate-y-1/2">
+                <svg class="w-5 h-5 text-skalia-light transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+              </div>
+            </div>
+            <div class="wheel-picker-modal hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 overflow-y-auto" id="nombrepersonnes_modal">
+              <div class="min-h-dvh flex items-center justify-center p-4 py-8">
+                <div class="bg-gradient-to-br from-skalia-navy to-skalia-purple rounded-2xl p-6 w-full max-w-sm border-2 border-skalia-light/30 shadow-2xl my-8">
+                  <h3 class="text-white font-montserrat font-semibold text-center mb-4">Nombre de personnes</h3>
+                  <div class="wheel-picker-container">
+                    <div class="wheel-picker overflow-hidden relative">
+                      <div class="wheel-overlay"></div>
+                      <div class="wheel-items" id="personnesWheel"></div>
+                      <div class="wheel-selection-indicator"></div>
+                    </div>
+                  </div>
+                  <div class="flex gap-3 mt-6">
+                    <button type="button" class="flex-1 bg-skalia-medium/50 text-white py-2 px-4 rounded-lg font-montserrat hover:bg-skalia-medium/70 transition-colors" onclick="closePicker('nombre_personnes')">Annuler</button>
+                    <button type="button" class="flex-1 bg-gradient-to-r from-skalia-violet to-skalia-medium text-white py-2 px-4 rounded-lg font-montserrat hover:shadow-lg hover:shadow-skalia-light/20 transition-all" onclick="confirmPicker('nombre_personnes')">Valider</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <input type="hidden" name="nombre_personnes" required>
+        </div>
+
+        <!-- Q5 -->
+        <div class="mb-8 group">
+          <label class="block text-lg font-semibold font-montaser text-white mb-3 group-hover:text-skalia-light transition-colors">
+            5. Cette tâche se fait-elle toujours de la même façon (répétitive, sans trop de variations) ?
+            <span class="text-skalia-light">*</span>
+          </label>
+          <div class="space-y-3">
+            <label class="flex items-center p-4 bg-skalia-navy/30 border-2 border-skalia-light/60 rounded-xl hover:bg-skalia-medium/20 hover:border-skalia-light cursor-pointer transition-all duration-300 backdrop-blur-sm">
+              <input type="radio" name="repetitivite" value="toujours_pareil" required class="accent-skalia-yellow focus:ring-skalia-yellow focus:ring-2">
+              <span class="ml-3 text-white font-montserrat">Oui, toujours pareil</span>
+            </label>
+            <label class="flex items-center p-4 bg-skalia-navy/30 border-2 border-skalia-light/60 rounded-xl hover:bg-skalia-medium/20 hover:border-skalia-light cursor-pointer transition-all duration-300 backdrop-blur-sm">
+              <input type="radio" name="repetitivite" value="souvent_pareil" required class="accent-skalia-yellow focus:ring-skalia-yellow focus:ring-2">
+              <span class="ml-3 text-white font-montserrat">Souvent pareil (± 80%)</span>
+            </label>
+            <label class="flex items-center p-4 bg-skalia-navy/30 border-2 border-skalia-light/60 rounded-xl hover:bg-skalia-medium/20 hover:border-skalia-light cursor-pointer transition-all duration-300 backdrop-blur-sm">
+              <input type="radio" name="repetitivite" value="ca_change_beaucoup" required class="accent-skalia-yellow focus:ring-skalia-yellow focus:ring-2">
+              <span class="ml-3 text-white font-montserrat">Ça change beaucoup</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Q6 -->
+        <div class="mb-8 group">
+          <label class="block text-lg font-semibold font-montaser text-white mb-3 group-hover:text-skalia-light transition-colors">
+            6. Votre adresse mail pour recevoir votre rapport personnalisé
+            <span class="text-skalia-light">*</span>
+          </label>
+          <input type="email" name="email" required
+                 class="w-full px-4 py-3 bg-skalia-navy/50 border-2 border-skalia-light/50 rounded-xl focus:ring-2 focus:ring-skalia-yellow focus:border-skalia-yellow focus:outline-none font-montserrat text-white placeholder-skalia-light/60 backdrop-blur-sm"
+                 placeholder="votre.email@entreprise.com">
+        </div>
+
+        <!-- Q7 -->
+        <div class="mb-8 group">
+          <label class="block text-lg font-semibold font-montaser text-white mb-3 group-hover:text-skalia-light transition-colors">
+            7. Votre prénom
+            <span class="text-skalia-light">*</span>
+          </label>
+          <input type="text" name="prenom" required
+                 class="w-full px-4 py-3 bg-skalia-navy/50 border-2 border-skalia-light/50 rounded-xl focus:ring-2 focus:ring-skalia-yellow focus:border-skalia-yellow focus:outline-none font-montserrat text-white placeholder-skalia-light/60 backdrop-blur-sm"
+                 placeholder="Votre prénom">
+        </div>
+
+        <!-- Submit -->
+        <div class="text-center pt-6">
+          <button type="submit"
+                  class="relative bg-gradient-to-r from-skalia-violet via-skalia-medium to-skalia-dark hover:from-skalia-dark hover:via-skalia-violet hover:to-skalia-medium text-white font-bold font-spartan py-5 px-10 rounded-2xl transition-all duration-500 text-lg shadow-2xl hover:shadow-skalia-light/25 transform hover:-translate-y-2 border-2 border-skalia-light/50 hover:border-skalia-light overflow-hidden group">
+            <span class="relative z-10">Recevoir mon rapport personnalisé</span>
+            <div class="absolute inset-0 bg-gradient-to-r from-skalia-yellow/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          </button>
+
+          <div class="flex items-center justify-center mt-4 text-skalia-light/80">
+            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/></svg>
+            <span class="text-sm font-montserrat">Vos données sont sécurisées</span>
+          </div>
+        </div>
+      </div>
+    </form>
+    <!-- Page de remerciement -->
+    <div id="thankYouPage" class="hidden fixed inset-0 bg-gradient-to-br from-skalia-purple via-skalia-dark to-skalia-navy z-50 overflow-y-auto">
+      <div class="min-h-dvh flex items-start justify-center p-4 pt-6">
+        <div class="max-w-2xl w-full mt-4 mb-8">
+          <!-- ENCADRÉ (card) -->
+          <div class="bg-gradient-to-br from-skalia-navy/80 to-skalia-purple/80 backdrop-blur-lg rounded-2xl shadow-2xl p-8 border border-skalia-light/50 relative overflow-hidden" style="box-shadow:0 0 80px rgba(197,155,253,.5),0 25px 50px -12px rgba(0,0,0,.25);">
+            <div class="absolute inset-0 bg-gradient-to-tr from-skalia-light/8 via-transparent to-skalia-violet/12 pointer-events-none"></div>
+            <div class="absolute -top-32 -left-32 w-64 h-64 bg-skalia-light/15 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-32 -right-32 w-64 h-64 bg-skalia-medium/20 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="relative z-10 text-center">
+              <!-- Icône de succès -->
+              <div class="w-20 h-20 bg-gradient-to-r from-skalia-yellow to-skalia-light rounded-full flex items-center justify-center mx-auto mb-8 shadow-2xl">
+                <svg class="w-10 h-10 text-skalia-purple" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+              </div>
+
+              <!-- Titre -->
+              <h2 class="text-4xl font-bold font-spartan text-white mb-8 bg-gradient-to-r from-white to-skalia-light bg-clip-text text-transparent">
+                Merci pour votre participation !
+              </h2>
+
+              <!-- Message principal -->
+              <div class="bg-gradient-to-r from-skalia-light/20 to-skalia-violet/20 border border-skalia-light/40 rounded-2xl p-6 mb-8 backdrop-blur-sm">
+                <p class="text-xl text-white mb-0 font-montserrat leading-relaxed">
+                  Votre rapport personnalisé d'analyse d'automatisation va arriver
+                  <span class="text-skalia-yellow font-semibold">d'une minute à l'autre</span>
+                  dans votre boîte mail.
+                </p>
+              </div>
+
+              <!-- Rappel -->
+              <div class="bg-skalia-yellow/20 border border-skalia-yellow/50 rounded-2xl p-6 mb-8 backdrop-blur-sm">
+                <div class="flex items-center justify-center mb-3">
+                  <svg class="w-6 h-6 text-skalia-yellow mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                  </svg>
+                  <span class="text-skalia-yellow font-semibold font-montserrat">Rappel important</span>
+                </div>
+                <p class="text-white font-montserrat">
+                  N'oubliez pas de vérifier vos <strong>mails indésirables</strong> si vous ne recevez pas le rapport dans les prochaines minutes.
+                </p>
+              </div>
+
+              <!-- Infos -->
+              <div class="text-left bg-gradient-to-br from-skalia-violet/30 to-skalia-medium/30 rounded-2xl p-6 border border-skalia-light/50 backdrop-blur-sm">
+                <h3 class="text-lg font-semibold text-skalia-yellow mb-4 font-montserrat">Votre rapport contiendra :</h3>
+                <ul class="space-y-3 text-white font-montserrat">
+                  <li class="flex items-start">
+                    <div class="w-2 h-2 bg-skalia-yellow rounded-full mr-3 mt-2 flex-shrink-0"></div>
+                    <span>Un résumé détaillé de votre situation actuelle</span>
+                  </li>
+                  <li class="flex items-start">
+                    <div class="w-2 h-2 bg-skalia-yellow rounded-full mr-3 mt-2 flex-shrink-0"></div>
+                    <span>Une action concrète à mettre en place dès aujourd'hui pour une amélioration rapide</span>
+                  </li>
+                  <li class="flex items-start">
+                    <div class="w-2 h-2 bg-skalia-yellow rounded-full mr-3 mt-2 flex-shrink-0"></div>
+                    <span>Le temps actuellement perdu sur vos tâches répétitives manuelles</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- COPYRIGHT -->
+          <div class="text-center mt-6 text-skalia-light/70 font-montserrat">
+            <p>© 2024 Skalia - Automatisation intelligente pour votre entreprise</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="text-center mt-8 text-skalia-light/70 font-montserrat">
+      <p>© 2024 Skalia - Automatisation intelligente pour votre entreprise</p>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'skalia_form_submitted_v1';
+    const WEBHOOK_URL = "/api/submit"; // 👉 proxy Vercel
+
+    document.getElementById('skaliaForm').addEventListener('submit', async function(e){
+      e.preventDefault();
+      const errors=validateForm();
+      if(errors.length){
+        showErrorMessage(errors[0]);
+        return;
+      }
+
+      const formData = Object.fromEntries(new FormData(this).entries());
+
+      try {
+        const res = await fetch(WEBHOOK_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData)
+        });
+
+        if (!res.ok) throw new Error("Erreur proxy");
+
+        // ✅ Succès
+        localStorage.setItem(STORAGE_KEY,'1');
+        document.getElementById('headerCard')?.classList.add('hidden');
+        document.getElementById('skaliaForm')?.classList.add('hidden');
+        const thankYouPage=document.getElementById('thankYouPage');
+        thankYouPage.classList.remove('hidden');
+        document.body.classList.add('thanks-open');
+        window.scrollTo({top:0,left:0,behavior:'auto'});
+        thankYouPage.scrollTop=0;
+
+      } catch (err) {
+        showErrorMessage("Une erreur est survenue, merci de réessayer.");
+        console.error("Erreur proxy:", err);
+      }
+    });
+  </script>
+</body>
+</html>
