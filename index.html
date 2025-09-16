@@ -372,45 +372,86 @@
     const STORAGE_KEY = 'skalia_form_submitted_v1';
     const WEBHOOK_URL = "/api/submit"; // proxy Vercel
 
-    /* ----- WheelPicker ----- */
-    class WheelPicker {
-      constructor(wheelElement, options, pickerName) {
-        this.wheelElement = wheelElement;
-        this.wheelItems = wheelElement.querySelector('.wheel-items');
-        this.options = options;
-        this.pickerName = pickerName;
-        this.currentIndex = 0;
-        this.itemHeight = 40;
-        this.init();
-      }
-      init() {
-        this.createItems();
-        this.currentIndex = 0;
-        this.setTransform(60);
-        this.updateSelection();
-      }
-      createItems() {
-        this.wheelItems.innerHTML = '';
-        this.options.forEach((o,i)=>{
-          const d=document.createElement('div');
-          d.className='wheel-item';
-          d.textContent=o.label;
-          d.dataset.value=o.value;
-          this.wheelItems.appendChild(d);
-        });
-      }
-      setTransform(v) {
-        const max=60, min=60-(this.options.length-1)*this.itemHeight;
-        const c=Math.max(min,Math.min(max,v));
-        this.wheelItems.style.transform=`translateY(${c}px)`;
-      }
-      updateSelection() {
-        this.wheelItems.querySelectorAll('.wheel-item').forEach((el,i)=>
-          el.classList.toggle('selected', i===this.currentIndex));
-      }
-      getSelectedValue(){ return this.options[this.currentIndex]; }
-    }
+/* ----- WheelPicker avec interactions complètes ----- */
+class WheelPicker {
+  constructor(wheelElement, options, pickerName) {
+    this.wheelElement = wheelElement;
+    this.wheelItems = wheelElement.querySelector('.wheel-items');
+    this.options = options;
+    this.pickerName = pickerName;
+    this.currentIndex = 0;
+    this.itemHeight = 40;
+    this.isDragging = false;
+    this.startY = 0;
+    this.startTransform = 0;
+    this.init();
+  }
+  init(){
+    this.createItems();
+    this.bindEvents();
+    this.currentIndex=0;
+    this.setTransform(60);
+    this.updateSelection();
+  }
+  createItems(){
+    this.wheelItems.innerHTML='';
+    this.options.forEach((o,i)=>{
+      const d=document.createElement('div');
+      d.className='wheel-item';
+      d.textContent=o.label;
+      d.dataset.value=o.value;
+      this.wheelItems.appendChild(d);
+    });
+  }
+  setTransform(v){
+    const max=60, min=60-(this.options.length-1)*this.itemHeight;
+    const c=Math.max(min,Math.min(max,v));
+    this.wheelItems.style.transform=`translateY(${c}px)`;
+  }
+  updateSelection(){
+    this.wheelItems.querySelectorAll('.wheel-item').forEach((el,i)=>
+      el.classList.toggle('selected', i===this.currentIndex));
+  }
+  getSelectedValue(){ return this.options[this.currentIndex]; }
 
+  // 🔥 Gestion des interactions
+  bindEvents(){
+    this.wheelItems.addEventListener('mousedown',this.handleMouseDown.bind(this));
+    document.addEventListener('mousemove',this.handleMouseMove.bind(this));
+    document.addEventListener('mouseup',this.handleMouseUp.bind(this));
+
+    this.wheelItems.addEventListener('touchstart',this.handleTouchStart.bind(this));
+    document.addEventListener('touchmove',this.handleTouchMove.bind(this),{passive:false});
+    document.addEventListener('touchend',this.handleTouchEnd.bind(this));
+
+    this.wheelItems.addEventListener('wheel',this.handleWheel.bind(this),{passive:false});
+  }
+  handleMouseDown(e){ this.isDragging=true; this.startY=e.clientY; this.startTransform=this.getCurrentTransform(); e.preventDefault(); }
+  handleMouseMove(e){ if(!this.isDragging) return; const dy=e.clientY-this.startY; this.setTransform(this.startTransform+dy); }
+  handleMouseUp(){ if(!this.isDragging) return; this.isDragging=false; this.snapToNearest(); }
+  handleTouchStart(e){ this.isDragging=true; this.startY=e.touches[0].clientY; this.startTransform=this.getCurrentTransform(); e.preventDefault(); }
+  handleTouchMove(e){ if(!this.isDragging) return; const dy=e.touches[0].clientY-this.startY; this.setTransform(this.startTransform+dy); e.preventDefault(); }
+  handleTouchEnd(){ if(!this.isDragging) return; this.isDragging=false; this.snapToNearest(); }
+  handleWheel(e){
+    e.preventDefault();
+    const d = e.deltaY>0?1:-1;
+    this.currentIndex=Math.max(0,Math.min(this.currentIndex+d,this.options.length-1));
+    this.setTransform(60-this.currentIndex*this.itemHeight);
+    this.updateSelection();
+  }
+  getCurrentTransform(){
+    const t=this.wheelItems.style.transform;
+    const m=t.match(/translateY\((-?\d+(?:\.\d+)?)px\)/);
+    return m?parseFloat(m[1]):0;
+  }
+  snapToNearest(){
+    const cur=this.getCurrentTransform();
+    const idx=Math.round((60-cur)/this.itemHeight);
+    this.currentIndex=Math.max(0,Math.min(idx,this.options.length-1));
+    this.setTransform(60-this.currentIndex*this.itemHeight);
+    this.updateSelection();
+  }
+}
     const pickers = {};
 
     document.addEventListener('DOMContentLoaded', function(){
