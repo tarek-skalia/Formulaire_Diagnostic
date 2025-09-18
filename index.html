@@ -68,7 +68,7 @@
     @keyframes slideUp   { from{transform:translate(-50%,0);opacity:1;}   to{transform:translate(-50%,-100%);opacity:0;} }
 
     .wheel-picker-container{ position:relative; height:160px; margin-bottom:10px; }
-    .wheel-picker{ position:relative; height:160px; overflow:hidden; cursor:grab; user-select:none; }
+    .wheel-picker{ position:relative; height:160px; overflow:hidden; cursor:grab; user-select:none; touch-action: none; }
     .wheel-picker:active{ cursor:grabbing; }
     .wheel-items{ position:absolute; width:100%; transition:transform .3s cubic-bezier(.25,.46,.45,.94); }
     .wheel-item{ height:40px; display:flex; align-items:center; justify-content:center; font-family:'Montserrat',sans-serif; font-size:16px; color:rgba(197,155,253,.6); transition:all .3s ease; }
@@ -429,9 +429,26 @@ class WheelPicker {
   handleMouseDown(e){ this.isDragging=true; this.startY=e.clientY; this.startTransform=this.getCurrentTransform(); e.preventDefault(); }
   handleMouseMove(e){ if(!this.isDragging) return; const dy=e.clientY-this.startY; this.setTransform(this.startTransform+dy); }
   handleMouseUp(){ if(!this.isDragging) return; this.isDragging=false; this.snapToNearest(); }
-  handleTouchStart(e){ this.isDragging=true; this.startY=e.touches[0].clientY; this.startTransform=this.getCurrentTransform(); e.preventDefault(); }
-  handleTouchMove(e){ if(!this.isDragging) return; const dy=e.touches[0].clientY-this.startY; this.setTransform(this.startTransform+dy); e.preventDefault(); }
-  handleTouchEnd(){ if(!this.isDragging) return; this.isDragging=false; this.snapToNearest(); }
+handleTouchStart(e){
+  this.isDragging=true;
+  this.startY=e.touches[0].clientY;
+  this.startTransform=this.getCurrentTransform();
+  document.body.style.overflow = "hidden"; // ⛔ bloque le scroll global
+  e.preventDefault();
+}
+handleTouchMove(e){
+  if(!this.isDragging) return;
+  const dy=e.touches[0].clientY-this.startY;
+  this.setTransform(this.startTransform+dy);
+  e.preventDefault(); // ⛔ empêche le scroll de la page
+}
+handleTouchEnd(){
+  if(!this.isDragging) return;
+  this.isDragging=false;
+  this.snapToNearest();
+  document.body.style.overflow = ""; // ✅ réactive le scroll global
+}
+
   handleWheel(e){
     e.preventDefault();
     const d = e.deltaY>0?1:-1;
