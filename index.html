@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Formulaire d'Analyse - Skalia</title>
 
-  <!-- Anti-flash AVANT paint : si déjà soumis, on force l'état "merci" dès le head -->
+  <!-- Anti-flash si déjà soumis -->
   <script>
     (function () {
       try {
@@ -50,7 +50,6 @@
       --skalia-navy:#211d3f;
       --page-bg: linear-gradient(to bottom right, var(--skalia-purple) 0%, var(--skalia-dark) 50%, var(--skalia-navy) 100%);
     }
-    /* Fond uniforme + anti-bounce + identique sur toutes les pages */
     html, body{
       min-height:100%;
       overscroll-behavior: none;
@@ -68,7 +67,15 @@
     @keyframes slideUp   { from{transform:translate(-50%,0);opacity:1;}   to{transform:translate(-50%,-100%);opacity:0;} }
 
     .wheel-picker-container{ position:relative; height:160px; margin-bottom:10px; }
-    .wheel-picker{ position:relative; height:160px; overflow:hidden; cursor:grab; user-select:none; touch-action: none; }
+    .wheel-picker{ 
+      position:relative; 
+      height:160px; 
+      overflow:hidden; 
+      cursor:grab; 
+      user-select:none; 
+      touch-action:none;              /* ✅ bloque gestures */
+      overscroll-behavior: contain;   /* ✅ empêche scroll page */
+    }
     .wheel-picker:active{ cursor:grabbing; }
     .wheel-items{ position:absolute; width:100%; transition:transform .3s cubic-bezier(.25,.46,.45,.94); }
     .wheel-item{ height:40px; display:flex; align-items:center; justify-content:center; font-family:'Montserrat',sans-serif; font-size:16px; color:rgba(197,155,253,.6); transition:all .3s ease; }
@@ -82,9 +89,6 @@
   <div class="max-w-2xl mx-auto px-4 relative z-10">
     <!-- Header -->
     <div id="headerCard" class="bg-gradient-to-r from-skalia-purple/90 to-skalia-violet/90 backdrop-blur-sm rounded-2xl shadow-2xl p-8 mb-6 border border-skalia-light/40 relative overflow-hidden" style="box-shadow:0 0 60px rgba(197,155,253,.4),0 25px 50px -12px rgba(0,0,0,.25);">
-      <div class="absolute inset-0 bg-gradient-to-br from-skalia-light/10 via-transparent to-skalia-yellow/10 pointer-events-none"></div>
-      <div class="absolute -top-20 -left-20 w-40 h-40 bg-skalia-light/20 rounded-full blur-3xl pointer-events-none"></div>
-      <div class="absolute -bottom-20 -right-20 w-40 h-40 bg-skalia-violet/30 rounded-full blur-3xl pointer-events-none"></div>
       <div class="relative z-10">
         <div class="flex flex-col items-center justify-center mb-6">
           <img src="https://lh3.googleusercontent.com/d/12YQegT7xzFlUm4C81QxWCRhLgtIMpB74"
@@ -108,12 +112,9 @@
         </p>
       </div>
     </div>
+
     <!-- Formulaire -->
     <form id="skaliaForm" class="bg-gradient-to-br from-skalia-navy/80 to-skalia-purple/80 backdrop-blur-lg rounded-2xl shadow-2xl p-8 border border-skalia-light/50 relative overflow-hidden" style="box-shadow:0 0 80px rgba(197,155,253,.5),0 25px 50px -12px rgba(0,0,0,.25);">
-      <div class="absolute inset-0 bg-gradient-to-tr from-skalia-light/8 via-transparent to-skalia-violet/12 pointer-events-none"></div>
-      <div class="absolute -top-32 -left-32 w-64 h-64 bg-skalia-light/15 rounded-full blur-3xl pointer-events-none"></div>
-      <div class="absolute -bottom-32 -right-32 w-64 h-64 bg-skalia-medium/20 rounded-full blur-3xl pointer-events-none"></div>
-
       <div class="relative z-10">
         <!-- Q1 -->
         <div class="mb-8 group">
@@ -122,24 +123,24 @@
             <span class="text-skalia-light">*</span>
           </label>
           <textarea name="tache_repetitive" required rows="3"
-            class="w-full px-4 py-3 bg-skalia-navy/50 border-2 border-skalia-light/50 rounded-xl focus:ring-2 focus:ring-skalia-yellow focus:border-skalia-yellow focus:outline-none resize-none font-montserrat text-white placeholder-skalia-light/60 backdrop-blur-sm"
+            class="w-full px-4 py-3 bg-skalia-navy/50 border-2 border-skalia-light/50 rounded-xl text-white placeholder-skalia-light/60"
             placeholder="Décrivez la tâche qui vous prend le plus de temps..."></textarea>
         </div>
 
         <!-- Q2 -->
         <div class="mb-8 group">
-          <label class="block text-lg font-semibold font-montaser text-white mb-3">
+          <label class="block text-lg font-semibold text-white mb-3">
             2. Combien de fois par semaine cette tâche est réalisée ?
             <span class="text-skalia-light">*</span>
           </label>
           <div class="relative">
-            <div class="picker-input bg-skalia-navy/50 border-2 border-skalia-light/50 rounded-xl backdrop-blur-sm px-4 py-3 cursor-pointer" data-picker="frequence_semaine">
-              <span class="text-white font-montserrat" id="frequence_display">Sélectionner...</span>
+            <div class="picker-input bg-skalia-navy/50 border-2 border-skalia-light/50 rounded-xl px-4 py-3 cursor-pointer" data-picker="frequence_semaine">
+              <span class="text-white" id="frequence_display">Sélectionner...</span>
             </div>
-            <div class="wheel-picker-modal hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 overflow-y-auto" id="frequence_semaine_modal">
-              <div class="min-h-dvh flex items-center justify-center p-4 py-8">
+            <div class="wheel-picker-modal hidden fixed inset-0 bg-black/50 z-50" id="frequence_semaine_modal">
+              <div class="min-h-dvh flex items-center justify-center p-4">
                 <div class="bg-gradient-to-br from-skalia-navy to-skalia-purple rounded-2xl p-6 w-full max-w-sm">
-                  <h3 class="text-white text-center mb-4">Fréquence par semaine</h3>
+                  <h3 class="text-white font-semibold text-center mb-4">Fréquence par semaine</h3>
                   <div class="wheel-picker-container">
                     <div class="wheel-picker">
                       <div class="wheel-overlay"></div>
@@ -149,7 +150,7 @@
                   </div>
                   <div class="flex gap-3 mt-6">
                     <button type="button" onclick="closePicker('frequence_semaine')" class="flex-1 bg-skalia-medium/50 text-white py-2 px-4 rounded-lg">Annuler</button>
-                    <button type="button" onclick="confirmPicker('frequence_semaine')" class="flex-1 bg-gradient-to-r from-skalia-violet to-skalia-medium text-white py-2 px-4 rounded-lg">Valider</button>
+                    <button type="button" onclick="confirmPicker('frequence_semaine')" class="flex-1 bg-skalia-violet text-white py-2 px-4 rounded-lg">Valider</button>
                   </div>
                 </div>
               </div>
@@ -160,19 +161,19 @@
 
         <!-- Q3 -->
         <div class="mb-8 group">
-          <label class="block text-lg font-semibold font-montaser text-white mb-3">
+          <label class="block text-lg font-semibold text-white mb-3">
             3. Combien de temps prend cette tâche à chaque fois ?
             <span class="text-skalia-light">*</span>
           </label>
           <div class="flex gap-3">
             <div class="relative flex-1">
               <div class="picker-input bg-skalia-navy/50 border-2 border-skalia-light/50 rounded-xl px-4 py-3 cursor-pointer" data-picker="duree_valeur">
-                <span class="text-white font-montserrat" id="duree_display">Durée...</span>
+                <span class="text-white" id="duree_display">Durée...</span>
               </div>
-              <div class="wheel-picker-modal hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50" id="duree_valeur_modal">
-                <div class="min-h-dvh flex items-center justify-center p-4 py-8">
+              <div class="wheel-picker-modal hidden fixed inset-0 bg-black/50 z-50" id="duree_valeur_modal">
+                <div class="min-h-dvh flex items-center justify-center p-4">
                   <div class="bg-gradient-to-br from-skalia-navy to-skalia-purple rounded-2xl p-6 w-full max-w-sm">
-                    <h3 class="text-white text-center mb-4">Durée</h3>
+                    <h3 class="text-white font-semibold text-center mb-4">Durée</h3>
                     <div class="wheel-picker-container">
                       <div class="wheel-picker">
                         <div class="wheel-overlay"></div>
@@ -182,7 +183,7 @@
                     </div>
                     <div class="flex gap-3 mt-6">
                       <button type="button" onclick="closePicker('duree_valeur')" class="flex-1 bg-skalia-medium/50 text-white py-2 px-4 rounded-lg">Annuler</button>
-                      <button type="button" onclick="confirmPicker('duree_valeur')" class="flex-1 bg-gradient-to-r from-skalia-violet to-skalia-medium text-white py-2 px-4 rounded-lg">Valider</button>
+                      <button type="button" onclick="confirmPicker('duree_valeur')" class="flex-1 bg-skalia-violet text-white py-2 px-4 rounded-lg">Valider</button>
                     </div>
                   </div>
                 </div>
@@ -191,12 +192,12 @@
 
             <div class="relative" style="width: 140px;">
               <div class="picker-input bg-skalia-navy/50 border-2 border-skalia-light/50 rounded-xl px-4 py-3 cursor-pointer" data-picker="duree_unite">
-                <span class="text-white font-montserrat" id="unite_display">Unité...</span>
+                <span class="text-white" id="unite_display">Unité...</span>
               </div>
-              <div class="wheel-picker-modal hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50" id="duree_unite_modal">
-                <div class="min-h-dvh flex items-center justify-center p-4 py-8">
+              <div class="wheel-picker-modal hidden fixed inset-0 bg-black/50 z-50" id="duree_unite_modal">
+                <div class="min-h-dvh flex items-center justify-center p-4">
                   <div class="bg-gradient-to-br from-skalia-navy to-skalia-purple rounded-2xl p-6 w-full max-w-sm">
-                    <h3 class="text-white text-center mb-4">Unité de temps</h3>
+                    <h3 class="text-white font-semibold text-center mb-4">Unité de temps</h3>
                     <div class="wheel-picker-container">
                       <div class="wheel-picker">
                         <div class="wheel-overlay"></div>
@@ -206,7 +207,7 @@
                     </div>
                     <div class="flex gap-3 mt-6">
                       <button type="button" onclick="closePicker('duree_unite')" class="flex-1 bg-skalia-medium/50 text-white py-2 px-4 rounded-lg">Annuler</button>
-                      <button type="button" onclick="confirmPicker('duree_unite')" class="flex-1 bg-gradient-to-r from-skalia-violet to-skalia-medium text-white py-2 px-4 rounded-lg">Valider</button>
+                      <button type="button" onclick="confirmPicker('duree_unite')" class="flex-1 bg-skalia-violet text-white py-2 px-4 rounded-lg">Valider</button>
                     </div>
                   </div>
                 </div>
@@ -220,18 +221,18 @@
 
         <!-- Q4 -->
         <div class="mb-8 group">
-          <label class="block text-lg font-semibold font-montaser text-white mb-3">
+          <label class="block text-lg font-semibold text-white mb-3">
             4. Combien de personnes de votre équipe y consacrent du temps ?
             <span class="text-skalia-light">*</span>
           </label>
           <div class="relative">
             <div class="picker-input bg-skalia-navy/50 border-2 border-skalia-light/50 rounded-xl px-4 py-3 cursor-pointer" data-picker="nombre_personnes">
-              <span class="text-white font-montserrat" id="personnes_display">Nombre de personnes...</span>
+              <span class="text-white" id="personnes_display">Nombre de personnes...</span>
             </div>
-            <div class="wheel-picker-modal hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50" id="nombre_personnes_modal">
-              <div class="min-h-dvh flex items-center justify-center p-4 py-8">
+            <div class="wheel-picker-modal hidden fixed inset-0 bg-black/50 z-50" id="nombre_personnes_modal">
+              <div class="min-h-dvh flex items-center justify-center p-4">
                 <div class="bg-gradient-to-br from-skalia-navy to-skalia-purple rounded-2xl p-6 w-full max-w-sm">
-                  <h3 class="text-white text-center mb-4">Nombre de personnes</h3>
+                  <h3 class="text-white font-semibold text-center mb-4">Nombre de personnes</h3>
                   <div class="wheel-picker-container">
                     <div class="wheel-picker">
                       <div class="wheel-overlay"></div>
@@ -241,7 +242,7 @@
                   </div>
                   <div class="flex gap-3 mt-6">
                     <button type="button" onclick="closePicker('nombre_personnes')" class="flex-1 bg-skalia-medium/50 text-white py-2 px-4 rounded-lg">Annuler</button>
-                    <button type="button" onclick="confirmPicker('nombre_personnes')" class="flex-1 bg-gradient-to-r from-skalia-violet to-skalia-medium text-white py-2 px-4 rounded-lg">Valider</button>
+                    <button type="button" onclick="confirmPicker('nombre_personnes')" class="flex-1 bg-skalia-violet text-white py-2 px-4 rounded-lg">Valider</button>
                   </div>
                 </div>
               </div>
@@ -252,21 +253,21 @@
 
         <!-- Q5 -->
         <div class="mb-8 group">
-          <label class="block text-lg font-semibold font-montaser text-white mb-3">
+          <label class="block text-lg font-semibold text-white mb-3">
             5. Cette tâche se fait-elle toujours de la même façon ?
             <span class="text-skalia-light">*</span>
           </label>
           <div class="space-y-3">
             <label class="flex items-center p-4 bg-skalia-navy/30 rounded-xl cursor-pointer">
-              <input type="radio" name="repetitivite" value="toujours_pareil" required class="accent-skalia-yellow">
+              <input type="radio" name="repetitivite" value="toujours_pareil" required>
               <span class="ml-3 text-white">Oui, toujours pareil</span>
             </label>
             <label class="flex items-center p-4 bg-skalia-navy/30 rounded-xl cursor-pointer">
-              <input type="radio" name="repetitivite" value="souvent_pareil" required class="accent-skalia-yellow">
+              <input type="radio" name="repetitivite" value="souvent_pareil" required>
               <span class="ml-3 text-white">Souvent pareil (± 80%)</span>
             </label>
             <label class="flex items-center p-4 bg-skalia-navy/30 rounded-xl cursor-pointer">
-              <input type="radio" name="repetitivite" value="ca_change_beaucoup" required class="accent-skalia-yellow">
+              <input type="radio" name="repetitivite" value="ca_change_beaucoup" required>
               <span class="ml-3 text-white">Ça change beaucoup</span>
             </label>
           </div>
@@ -274,28 +275,30 @@
 
         <!-- Q6 -->
         <div class="mb-8 group">
-          <label class="block text-lg font-semibold font-montaser text-white mb-3">
-            6. Votre adresse mail *
+          <label class="block text-lg font-semibold text-white mb-3">
+            6. Votre adresse mail pour recevoir le rapport
+            <span class="text-skalia-light">*</span>
           </label>
           <input type="email" name="email" required
-                 class="w-full px-4 py-3 bg-skalia-navy/50 border-2 border-skalia-light/50 rounded-xl text-white"
-                 placeholder="votre.email@entreprise.com">
+            class="w-full px-4 py-3 bg-skalia-navy/50 border-2 border-skalia-light/50 rounded-xl text-white placeholder-skalia-light/60"
+            placeholder="votre.email@entreprise.com">
         </div>
 
         <!-- Q7 -->
         <div class="mb-8 group">
-          <label class="block text-lg font-semibold font-montaser text-white mb-3">
-            7. Votre prénom *
+          <label class="block text-lg font-semibold text-white mb-3">
+            7. Votre prénom
+            <span class="text-skalia-light">*</span>
           </label>
           <input type="text" name="prenom" required
-                 class="w-full px-4 py-3 bg-skalia-navy/50 border-2 border-skalia-light/50 rounded-xl text-white"
-                 placeholder="Votre prénom">
+            class="w-full px-4 py-3 bg-skalia-navy/50 border-2 border-skalia-light/50 rounded-xl text-white placeholder-skalia-light/60"
+            placeholder="Votre prénom">
         </div>
 
         <!-- Submit -->
         <div class="text-center pt-6">
           <button type="submit"
-                  class="bg-gradient-to-r from-skalia-violet via-skalia-medium to-skalia-dark text-white font-bold py-5 px-10 rounded-2xl">
+                  class="bg-gradient-to-r from-skalia-violet to-skalia-dark text-white font-bold font-spartan py-5 px-10 rounded-2xl">
             Recevoir mon rapport personnalisé
           </button>
         </div>
@@ -305,39 +308,37 @@
     <div id="thankYouPage" class="hidden fixed inset-0 bg-gradient-to-br from-skalia-purple via-skalia-dark to-skalia-navy z-50 overflow-y-auto">
       <div class="min-h-dvh flex items-start justify-center p-4 pt-6">
         <div class="max-w-2xl w-full mt-4 mb-8">
-          <!-- ENCADRÉ -->
           <div class="bg-gradient-to-br from-skalia-navy/80 to-skalia-purple/80 backdrop-blur-lg rounded-2xl shadow-2xl p-8 border border-skalia-light/50 relative overflow-hidden">
             <div class="relative z-10 text-center">
-              <!-- Icône -->
-              <div class="w-20 h-20 bg-gradient-to-r from-skalia-yellow to-skalia-light rounded-full flex items-center justify-center mx-auto mb-8">
+              <div class="w-20 h-20 bg-gradient-to-r from-skalia-yellow to-skalia-light rounded-full flex items-center justify-center mx-auto mb-8 shadow-2xl">
                 <svg class="w-10 h-10 text-skalia-purple" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                 </svg>
               </div>
-
-              <!-- Titre -->
-              <h2 class="text-4xl font-bold font-spartan text-white mb-8">Merci pour votre participation !</h2>
-
-              <!-- Message -->
+              <h2 class="text-4xl font-bold font-spartan text-white mb-8 bg-gradient-to-r from-white to-skalia-light bg-clip-text text-transparent">
+                Merci pour votre participation !
+              </h2>
               <div class="bg-gradient-to-r from-skalia-light/20 to-skalia-violet/20 border border-skalia-light/40 rounded-2xl p-6 mb-8">
-                <p class="text-xl text-white mb-0 font-montserrat">
-                  Votre rapport personnalisé va arriver
+                <p class="text-xl text-white mb-0">
+                  Votre rapport personnalisé d'analyse d'automatisation va arriver
                   <span class="text-skalia-yellow font-semibold">d'une minute à l'autre</span>
                   dans votre boîte mail.
                 </p>
               </div>
-
-              <!-- Rappel -->
               <div class="bg-skalia-yellow/20 border border-skalia-yellow/50 rounded-2xl p-6 mb-8">
-                <p class="text-white font-montserrat">
-                  N'oubliez pas de vérifier vos <strong>mails indésirables</strong> si vous ne recevez pas le rapport.
+                <div class="flex items-center justify-center mb-3">
+                  <svg class="w-6 h-6 text-skalia-yellow mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                  </svg>
+                  <span class="text-skalia-yellow font-semibold">Rappel important</span>
+                </div>
+                <p class="text-white">
+                  N'oubliez pas de vérifier vos <strong>mails indésirables</strong> si vous ne recevez pas le rapport dans les prochaines minutes.
                 </p>
               </div>
-
-              <!-- Infos -->
               <div class="text-left bg-gradient-to-br from-skalia-violet/30 to-skalia-medium/30 rounded-2xl p-6 border border-skalia-light/50">
                 <h3 class="text-lg font-semibold text-skalia-yellow mb-4">Votre rapport contiendra :</h3>
-                <ul class="space-y-3 text-white font-montserrat">
+                <ul class="space-y-3 text-white">
                   <li class="flex items-start">
                     <div class="w-2 h-2 bg-skalia-yellow rounded-full mr-3 mt-2"></div>
                     <span>Un résumé détaillé de votre situation actuelle</span>
@@ -348,223 +349,189 @@
                   </li>
                   <li class="flex items-start">
                     <div class="w-2 h-2 bg-skalia-yellow rounded-full mr-3 mt-2"></div>
-                    <span>Le temps actuellement perdu sur vos tâches répétitives</span>
+                    <span>Le temps actuellement perdu sur vos tâches répétitives manuelles</span>
                   </li>
                 </ul>
               </div>
             </div>
           </div>
-
-          <!-- COPYRIGHT -->
-          <div class="text-center mt-6 text-skalia-light/70 font-montserrat">
-            <p>© 2025 Skalia - Automatisation intelligente pour votre entreprise</p>
+          <div class="text-center mt-6 text-skalia-light/70">
+            <p>© 2024 Skalia - Automatisation intelligente pour votre entreprise</p>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Footer -->
-    <div class="text-center mt-8 text-skalia-light/70 font-montserrat">
-      <p>© 2025 Skalia - Automatisation intelligente pour votre entreprise</p>
+    <div class="text-center mt-8 text-skalia-light/70">
+      <p>© 2024 Skalia - Automatisation intelligente pour votre entreprise</p>
     </div>
   </div>
   <script>
     const STORAGE_KEY = 'skalia_form_submitted_v1';
-    const WEBHOOK_URL = "/api/submit"; // proxy Vercel
 
-/* ----- WheelPicker avec interactions complètes ----- */
-class WheelPicker {
-  constructor(wheelElement, options, pickerName) {
-    this.wheelElement = wheelElement;
-    this.wheelItems = wheelElement.querySelector('.wheel-items');
-    this.options = options;
-    this.pickerName = pickerName;
-    this.currentIndex = 0;
-    this.itemHeight = 40;
-    this.isDragging = false;
-    this.startY = 0;
-    this.startTransform = 0;
-    this.init();
-  }
-  init(){
-    this.createItems();
-    this.bindEvents();
-    this.currentIndex=0;
-    this.setTransform(60);
-    this.updateSelection();
-  }
-  createItems(){
-    this.wheelItems.innerHTML='';
-    this.options.forEach((o,i)=>{
-      const d=document.createElement('div');
-      d.className='wheel-item';
-      d.textContent=o.label;
-      d.dataset.value=o.value;
-      this.wheelItems.appendChild(d);
+    document.addEventListener('DOMContentLoaded', () => {
+      if (document.documentElement.classList.contains('already-submitted')) {
+        document.body.classList.add('thanks-open');
+        document.getElementById('thankYouPage').classList.remove('hidden');
+        window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+      }
     });
-  }
-  setTransform(v){
-    const max=60, min=60-(this.options.length-1)*this.itemHeight;
-    const c=Math.max(min,Math.min(max,v));
-    this.wheelItems.style.transform=`translateY(${c}px)`;
-  }
-  updateSelection(){
-    this.wheelItems.querySelectorAll('.wheel-item').forEach((el,i)=>
-      el.classList.toggle('selected', i===this.currentIndex));
-  }
-  getSelectedValue(){ return this.options[this.currentIndex]; }
 
-  // 🔥 Gestion des interactions
-  bindEvents(){
-    this.wheelItems.addEventListener('mousedown',this.handleMouseDown.bind(this));
-    document.addEventListener('mousemove',this.handleMouseMove.bind(this));
-    document.addEventListener('mouseup',this.handleMouseUp.bind(this));
+    /* ----- WheelPicker (avec fix mobile) ----- */
+    class WheelPicker {
+      constructor(wheelElement, options, pickerName) {
+        this.wheelElement = wheelElement;
+        this.wheelItems = wheelElement.querySelector('.wheel-items');
+        this.options = options;
+        this.pickerName = pickerName;
+        this.currentIndex = 0;
+        this.itemHeight = 40;
+        this.isDragging = false;
+        this.startY = 0;
+        this.startTransform = 0;
+        this.init();
+      }
+      init() {
+        this.createItems();
+        this.bindEvents();
+        this.currentIndex = 0;
+        this.setTransform(60);
+        this.updateSelection();
+      }
+      createItems() {
+        this.wheelItems.innerHTML = '';
+        this.options.forEach((o, i) => {
+          const d = document.createElement('div');
+          d.className = 'wheel-item';
+          d.textContent = o.label;
+          d.dataset.value = o.value;
+          this.wheelItems.appendChild(d);
+        });
+      }
+      bindEvents() {
+        this.wheelItems.addEventListener('mousedown', e => this.startDrag(e.clientY));
+        document.addEventListener('mousemove', e => this.moveDrag(e.clientY));
+        document.addEventListener('mouseup', () => this.endDrag());
 
-    this.wheelItems.addEventListener('touchstart',this.handleTouchStart.bind(this));
-    document.addEventListener('touchmove',this.handleTouchMove.bind(this),{passive:false});
-    document.addEventListener('touchend',this.handleTouchEnd.bind(this));
+        this.wheelItems.addEventListener('touchstart', e => this.startDrag(e.touches[0].clientY), { passive: false });
+        document.addEventListener('touchmove', e => { this.moveDrag(e.touches[0].clientY); e.preventDefault(); }, { passive: false });
+        document.addEventListener('touchend', () => this.endDrag());
 
-    this.wheelItems.addEventListener('wheel',this.handleWheel.bind(this),{passive:false});
-  }
-  handleMouseDown(e){ this.isDragging=true; this.startY=e.clientY; this.startTransform=this.getCurrentTransform(); e.preventDefault(); }
-  handleMouseMove(e){ if(!this.isDragging) return; const dy=e.clientY-this.startY; this.setTransform(this.startTransform+dy); }
-  handleMouseUp(){ if(!this.isDragging) return; this.isDragging=false; this.snapToNearest(); }
-handleTouchStart(e){
-  this.isDragging=true;
-  this.startY=e.touches[0].clientY;
-  this.startTransform=this.getCurrentTransform();
-  document.body.style.overflow = "hidden"; // ⛔ bloque le scroll global
-  e.preventDefault();
-}
-handleTouchMove(e){
-  if(!this.isDragging) return;
-  const dy=e.touches[0].clientY-this.startY;
-  this.setTransform(this.startTransform+dy);
-  e.preventDefault(); // ⛔ empêche le scroll de la page
-}
-handleTouchEnd(){
-  if(!this.isDragging) return;
-  this.isDragging=false;
-  this.snapToNearest();
-  document.body.style.overflow = ""; // ✅ réactive le scroll global
-}
+        this.wheelItems.addEventListener('wheel', e => {
+          e.preventDefault();
+          const d = e.deltaY > 0 ? 1 : -1;
+          this.snapTo(this.currentIndex + d);
+        }, { passive: false });
+      }
+      startDrag(y) {
+        this.isDragging = true;
+        this.startY = y;
+        this.startTransform = this.getCurrentTransform();
+      }
+      moveDrag(y) {
+        if (!this.isDragging) return;
+        const dy = y - this.startY;
+        this.setTransform(this.startTransform + dy);
+      }
+      endDrag() {
+        if (!this.isDragging) return;
+        this.isDragging = false;
+        this.snapToNearest();
+      }
+      getCurrentTransform() {
+        const t = this.wheelItems.style.transform;
+        const m = t.match(/translateY\((-?\d+(?:\.\d+)?)px\)/);
+        return m ? parseFloat(m[1]) : 0;
+      }
+      setTransform(v) {
+        const max = 60, min = 60 - (this.options.length - 1) * this.itemHeight;
+        const c = Math.max(min, Math.min(max, v));
+        this.wheelItems.style.transform = `translateY(${c}px)`;
+      }
+      snapToNearest() {
+        const cur = this.getCurrentTransform();
+        const idx = Math.round((60 - cur) / this.itemHeight);
+        this.snapTo(idx);
+      }
+      snapTo(i) {
+        const ci = Math.max(0, Math.min(i, this.options.length - 1));
+        this.currentIndex = ci;
+        this.setTransform(60 - ci * this.itemHeight);
+        this.updateSelection();
+      }
+      updateSelection() {
+        this.wheelItems.querySelectorAll('.wheel-item').forEach((el, i) =>
+          el.classList.toggle('selected', i === this.currentIndex)
+        );
+      }
+      getSelectedValue() {
+        return this.options[this.currentIndex];
+      }
+    }
 
-  handleWheel(e){
-    e.preventDefault();
-    const d = e.deltaY>0?1:-1;
-    this.currentIndex=Math.max(0,Math.min(this.currentIndex+d,this.options.length-1));
-    this.setTransform(60-this.currentIndex*this.itemHeight);
-    this.updateSelection();
-  }
-  getCurrentTransform(){
-    const t=this.wheelItems.style.transform;
-    const m=t.match(/translateY\((-?\d+(?:\.\d+)?)px\)/);
-    return m?parseFloat(m[1]):0;
-  }
-  snapToNearest(){
-    const cur=this.getCurrentTransform();
-    const idx=Math.round((60-cur)/this.itemHeight);
-    this.currentIndex=Math.max(0,Math.min(idx,this.options.length-1));
-    this.setTransform(60-this.currentIndex*this.itemHeight);
-    this.updateSelection();
-  }
-}
     const pickers = {};
 
-    document.addEventListener('DOMContentLoaded', function(){
-      const frequenceOptions = Array.from({length:50}, (_,i)=>({value:i+1, label:`${i+1} fois`}));
-      const dureeOptions = Array.from({length:100}, (_,i)=>({value:i+1, label:String(i+1)}));
-      const uniteOptions = [ {value:'minutes', label:'minute(s)'}, {value:'heures', label:'heure(s)'}, {value:'jours', label:'jour(s)'} ];
-      const personnesOptions = Array.from({length:100}, (_,i)=>({value:i+1, label:`${i+1} personne${i+1>1?'s':''}`}));
+    document.addEventListener('DOMContentLoaded', function () {
+      const frequenceOptions = Array.from({ length: 50 }, (_, i) => ({ value: i + 1, label: `${i + 1} fois` }));
+      const dureeOptions = Array.from({ length: 100 }, (_, i) => ({ value: i + 1, label: String(i + 1) }));
+      const uniteOptions = [
+        { value: 'minutes', label: 'minute(s)' },
+        { value: 'heures', label: 'heure(s)' },
+        { value: 'jours', label: 'jour(s)' }
+      ];
+      const personnesOptions = Array.from({ length: 100 }, (_, i) => ({ value: i + 1, label: `${i + 1} personne${i + 1 > 1 ? 's' : ''}` }));
 
       pickers.frequence_semaine = new WheelPicker(document.getElementById('frequenceWheel').closest('.wheel-picker'), frequenceOptions, 'frequence_semaine');
-      pickers.duree_valeur      = new WheelPicker(document.getElementById('dureeWheel').closest('.wheel-picker'), dureeOptions, 'duree_valeur');
-      pickers.duree_unite       = new WheelPicker(document.getElementById('uniteWheel').closest('.wheel-picker'), uniteOptions, 'duree_unite');
-      pickers.nombre_personnes  = new WheelPicker(document.getElementById('personnesWheel').closest('.wheel-picker'), personnesOptions, 'nombre_personnes');
-
-      document.querySelectorAll('.picker-input').forEach(input=>{
-        input.addEventListener('click', function(){
-          const name = this.dataset.picker;
-          openPicker(name);
-        });
-      });
+      pickers.duree_valeur = new WheelPicker(document.getElementById('dureeWheel').closest('.wheel-picker'), dureeOptions, 'duree_valeur');
+      pickers.duree_unite = new WheelPicker(document.getElementById('uniteWheel').closest('.wheel-picker'), uniteOptions, 'duree_unite');
+      pickers.nombre_personnes = new WheelPicker(document.getElementById('personnesWheel').closest('.wheel-picker'), personnesOptions, 'nombre_personnes');
     });
 
-    // ✅ Corrections ici
-    function openPicker(pickerName){
-      const modal = document.getElementById(`${pickerName}_modal`);
-      if(!modal) return;
-      modal.classList.remove('hidden');
+    function openPicker(pickerName) {
+      document.getElementById(`${pickerName}_modal`).classList.remove('hidden');
     }
-    function closePicker(pickerName){
-      const modal = document.getElementById(`${pickerName}_modal`);
-      if(!modal) return;
-      modal.classList.add('hidden');
+    function closePicker(pickerName) {
+      document.getElementById(`${pickerName}_modal`).classList.add('hidden');
     }
-    function confirmPicker(pickerName){
+    function confirmPicker(pickerName) {
       const picker = pickers[pickerName];
-      if(picker){
+      if (picker) {
         const selected = picker.getSelectedValue();
         const hiddenInput = document.querySelector(`input[name="${pickerName}"]`);
         if (hiddenInput && selected) hiddenInput.value = selected.value;
 
-        let displayId = pickerName + '_display';
-        if (pickerName==='duree_unite') displayId='unite_display';
-        if (pickerName==='duree_valeur') displayId='duree_display';
-        if (pickerName==='nombre_personnes') displayId='personnes_display';
-        if (pickerName==='frequence_semaine') displayId='frequence_display';
-
+        const displayId = pickerName + "_display";
         const displayEl = document.getElementById(displayId);
-        if(displayEl && selected){
-          displayEl.textContent = selected.label;
-          displayEl.parentElement.style.borderColor = 'rgba(197,155,253,.8)';
-          displayEl.parentElement.style.boxShadow   = '0 0 15px rgba(197,155,253,.3)';
-        }
+        if (displayEl && selected) displayEl.textContent = selected.label;
       }
       closePicker(pickerName);
     }
 
-    // Validation
-    function validateForm(){
-      const errors=[];
-      if(!document.querySelector('textarea[name="tache_repetitive"]').value.trim()) errors.push("Question 1 manquante");
-      if(!document.querySelector('input[name="frequence_semaine"]').value) errors.push("Question 2 manquante");
-      if(!document.querySelector('input[name="duree_valeur"]').value || !document.querySelector('input[name="duree_unite"]').value) errors.push("Question 3 manquante");
-      if(!document.querySelector('input[name="nombre_personnes"]').value) errors.push("Question 4 manquante");
-      if(!document.querySelector('input[name="repetitivite"]:checked')) errors.push("Question 5 manquante");
-      const email=document.querySelector('input[name="email"]').value.trim();
-      if(!email) errors.push("Email manquant");
-      const prenom=document.querySelector('input[name="prenom"]').value.trim();
-      if(!prenom) errors.push("Prénom manquant");
-      return errors;
-    }
-
-    // Soumission formulaire
-    document.getElementById('skaliaForm').addEventListener('submit', async function(e){
+    /* ----- Soumission du formulaire ----- */
+    document.getElementById('skaliaForm').addEventListener('submit', async function (e) {
       e.preventDefault();
-      const errors=validateForm();
-      if(errors.length){ alert(errors[0]); return; }
 
       const formData = Object.fromEntries(new FormData(this).entries());
 
       try {
-        const res = await fetch(WEBHOOK_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+        const res = await fetch('/api/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(formData)
         });
 
-        if (!res.ok) throw new Error("Erreur proxy");
+        if (!res.ok) throw new Error('Erreur lors de l’envoi');
+        localStorage.setItem(STORAGE_KEY, '1');
 
-        // ✅ Succès
-        localStorage.setItem(STORAGE_KEY,'1');
-        document.getElementById('headerCard')?.classList.add('hidden');
-        document.getElementById('skaliaForm')?.classList.add('hidden');
-        document.getElementById('thankYouPage').classList.remove('hidden');
+        document.getElementById('headerCard').classList.add('hidden');
+        document.getElementById('skaliaForm').classList.add('hidden');
+        const thankYouPage = document.getElementById('thankYouPage');
+        thankYouPage.classList.remove('hidden');
         document.body.classList.add('thanks-open');
+        window.scrollTo({ top: 0, behavior: 'auto' });
       } catch (err) {
-        alert("Erreur lors de l'envoi, merci de réessayer.");
-        console.error("Erreur proxy:", err);
+        alert('❌ Une erreur est survenue : ' + err.message);
       }
     });
   </script>
