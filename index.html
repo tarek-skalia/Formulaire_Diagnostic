@@ -89,11 +89,15 @@
 
     /* Modals des pickers */
     .wheel-picker-modal { z-index: 9999 !important; } /* ✅ s’affiche au-dessus de tout */
+
+    /* Petits helpers focus/hover */
+    .picker-input:hover { box-shadow: 0 0 25px rgba(197,155,253,.25); }
   </style>
 </head>
 
 <body class="bg-gradient-to-br from-skalia-purple via-skalia-dark to-skalia-navy min-h-screen py-8 font-montserrat relative overflow-x-hidden">
   <div class="max-w-2xl mx-auto px-4 relative z-10">
+
     <!-- Header -->
     <div id="headerCard" class="bg-gradient-to-r from-skalia-purple/90 to-skalia-violet/90 backdrop-blur-sm rounded-2xl shadow-2xl p-8 mb-6 border border-skalia-light/40 relative overflow-hidden" style="box-shadow:0 0 60px rgba(197,155,253,.4),0 25px 50px -12px rgba(0,0,0,.25);">
       <div class="absolute inset-0 bg-gradient-to-br from-skalia-light/10 via-transparent to-skalia-yellow/10 pointer-events-none"></div>
@@ -284,15 +288,15 @@
             <span class="text-skalia-light">*</span>
           </label>
           <div class="space-y-3">
-            <label class="flex items-center p-4 bg-skalia-navy/30 border-2 border-skalia-light/60 rounded-xl cursor-pointer transition-all duration-300 backdrop-blur-sm">
+            <label class="flex items-center p-4 bg-skalia-navy/30 border-2 border-skalia-light/60 rounded-xl hover:bg-skalia-medium/20 hover:border-skalia-light cursor-pointer transition-all duration-300 backdrop-blur-sm">
               <input type="radio" name="repetitivite" value="toujours_pareil" required class="accent-skalia-yellow">
               <span class="ml-3 text-white font-montserrat">Oui, toujours pareil</span>
             </label>
-            <label class="flex items-center p-4 bg-skalia-navy/30 border-2 border-skalia-light/60 rounded-xl cursor-pointer transition-all duration-300 backdrop-blur-sm">
+            <label class="flex items-center p-4 bg-skalia-navy/30 border-2 border-skalia-light/60 rounded-xl hover:bg-skalia-medium/20 hover:border-skalia-light cursor-pointer transition-all duration-300 backdrop-blur-sm">
               <input type="radio" name="repetitivite" value="souvent_pareil" required class="accent-skalia-yellow">
               <span class="ml-3 text-white font-montserrat">Souvent pareil (± 80%)</span>
             </label>
-            <label class="flex items-center p-4 bg-skalia-navy/30 border-2 border-skalia-light/60 rounded-xl cursor-pointer transition-all duration-300 backdrop-blur-sm">
+            <label class="flex items-center p-4 bg-skalia-navy/30 border-2 border-skalia-light/60 rounded-xl hover:bg-skalia-medium/20 hover:border-skalia-light cursor-pointer transition-all duration-300 backdrop-blur-sm">
               <input type="radio" name="repetitivite" value="ca_change_beaucoup" required class="accent-skalia-yellow">
               <span class="ml-3 text-white font-montserrat">Ça change beaucoup</span>
             </label>
@@ -328,6 +332,7 @@
             <span class="relative z-10">Recevoir mon rapport personnalisé</span>
             <div class="absolute inset-0 bg-gradient-to-r from-skalia-yellow/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
           </button>
+
           <div class="flex items-center justify-center mt-4 text-skalia-light/80">
             <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/></svg>
             <span class="text-sm font-montserrat">Vos données sont sécurisées</span>
@@ -335,7 +340,8 @@
         </div>
       </div>
     </form>
-    <!-- Page de remerciement -->
+
+    <!-- Page de remerciement — encadré + copyright -->
     <div id="thankYouPage" class="hidden fixed inset-0 bg-gradient-to-br from-skalia-purple via-skalia-dark to-skalia-navy z-50 overflow-y-auto">
       <div class="min-h-dvh flex items-start justify-center p-4 pt-6">
         <div class="max-w-2xl w-full mt-4 mb-8">
@@ -401,10 +407,11 @@
       <p>© 2024 Skalia - Automatisation intelligente pour votre entreprise</p>
     </div>
   </div>
+
   <script>
     const STORAGE_KEY = 'skalia_form_submitted_v1';
 
-    // Si déjà soumis, afficher direct la page de remerciement
+    // Afficher la page "merci" si déjà soumis
     document.addEventListener('DOMContentLoaded', () => {
       if (document.documentElement.classList.contains('already-submitted')) {
         document.body.classList.add('thanks-open');
@@ -415,7 +422,7 @@
       }
     });
 
-    /* ===== WheelPicker (mobile-friendly) ===== */
+    /* ===== WheelPicker (desktop + mobile) ===== */
     class WheelPicker {
       constructor(wheelElement, options, pickerName) {
         this.wheelElement = wheelElement;
@@ -457,7 +464,7 @@
         document.addEventListener('mousemove', (e) => this.moveDrag(e.clientY));
         document.addEventListener('mouseup', () => this.endDrag());
 
-        // Tactile (bloque uniquement pendant drag)
+        // Tactile : on bloque la page SEULEMENT pendant le drag
         this.wheelItems.addEventListener('touchstart', (e) => {
           this.startDrag(e.touches[0].clientY);
           e.preventDefault();
@@ -467,7 +474,7 @@
         document.addEventListener('touchmove', (e) => {
           if (!this.isDragging) return;
           this.moveDrag(e.touches[0].clientY);
-          e.preventDefault();      // bloque le scroll de la page uniquement en drag
+          e.preventDefault(); // bloque scroll page pendant le drag
         }, { passive: false });
 
         document.addEventListener('touchend', () => this.endDrag(), { passive: true });
@@ -502,7 +509,7 @@
         const t = this.wheelItems.style.transform;
         const m = t.match(/translateY\((-?\d+(?:\.\d+)?)px\)/);
         return m ? parseFloat(m[1]) : 0;
-        }
+      }
 
       setTransform(v) {
         const max = 60, min = 60 - (this.options.length - 1) * this.itemHeight;
@@ -548,66 +555,94 @@
       pickers.duree_valeur      = new WheelPicker(document.getElementById('dureeWheel').closest('.wheel-picker'), dureeOptions, 'duree_valeur');
       pickers.duree_unite       = new WheelPicker(document.getElementById('uniteWheel').closest('.wheel-picker'), uniteOptions, 'duree_unite');
       pickers.nombre_personnes  = new WheelPicker(document.getElementById('personnesWheel').closest('.wheel-picker'), personnesOptions, 'nombre_personnes');
-
-      // Ouverture modals
-      document.querySelectorAll('.picker-input').forEach(input => {
-        input.addEventListener('click', function () {
-          openPicker(this.dataset.picker);
-        });
-      });
-
-      // Fermer si clic hors carte
-      document.querySelectorAll('.wheel-picker-modal').forEach(modal => {
-        modal.addEventListener('click', (e) => {
-          // si on clique sur le backdrop (et pas la carte)
-          if (e.target === modal) {
-            const name = modal.id.replace('_modal', '');
-            closePicker(name);
-          }
-        });
-      });
     });
 
-    // Ouverture/Fermeture + confirm
+    // 🔁 Délégation de clic : ouvre le picker même si on clique sur un enfant (span/svg)
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.picker-input');
+      if (!btn) return;
+      const pickerName = btn.dataset.picker;
+      if (pickerName) openPicker(pickerName);
+    });
+
+    // Fermer si clic hors de la carte du modal
+    document.addEventListener('click', (e) => {
+      const modal = e.target.closest('.wheel-picker-modal');
+      // On veut gérer le clic sur le backdrop (modal lui-même, pas le contenu interne)
+      if (modal && e.target === modal) {
+        const name = modal.id.replace('_modal', '');
+        closePicker(name);
+      }
+    });
+
+    // Ouverture/Fermeture robustes
     function openPicker(pickerName) {
-      const modal = document.getElementById(`${pickerName}_modal`);
-      if (!modal) return;
+      let modal = document.getElementById(`${pickerName}_modal`);
+      if (!modal) {
+        const fallbackId = `${pickerName.replace(/_/g,'')}_modal`;
+        modal = document.getElementById(fallbackId);
+      }
+      if (!modal) {
+        modal = Array.from(document.querySelectorAll('.wheel-picker-modal')).find(m => m.id.startsWith(pickerName));
+      }
+      if (!modal) {
+        console.error(`[openPicker] Modal introuvable pour "${pickerName}". Attendu: "${pickerName}_modal"`);
+        return;
+      }
       modal.classList.remove('hidden');
-      document.body.classList.add('modal-open'); // 🔒 empêche scroll page sous le modal
+      document.body.classList.add('modal-open');
     }
 
     function closePicker(pickerName) {
-      const modal = document.getElementById(`${pickerName}_modal`);
-      if (!modal) return;
+      const modal =
+        document.getElementById(`${pickerName}_modal`) ||
+        document.getElementById(`${pickerName.replace(/_/g,'')}_modal`) ||
+        Array.from(document.querySelectorAll('.wheel-picker-modal')).find(m => m.id.startsWith(pickerName));
+      if (!modal) {
+        console.warn(`[closePicker] Modal introuvable pour "${pickerName}"`);
+        document.body.classList.remove('modal-open');
+        return;
+      }
       modal.classList.add('hidden');
-      document.body.classList.remove('modal-open'); // 🔓 réactive scroll page
+      document.body.classList.remove('modal-open');
     }
 
     function confirmPicker(pickerName) {
       const picker = pickers[pickerName];
-      if (picker) {
-        const selected = picker.getSelectedValue();
-        const hiddenInput = document.querySelector(`input[name="${pickerName}"]`);
-        if (hiddenInput && selected) hiddenInput.value = selected.value;
+      if (!picker) {
+        console.error(`[confirmPicker] Picker "${pickerName}" introuvable`);
+        closePicker(pickerName);
+        return;
+      }
 
-        const mapDisplay = {
-          'duree_unite': 'unite_display',
-          'duree_valeur': 'duree_display',
-          'nombre_personnes': 'personnes_display',
-          'frequence_semaine': 'frequence_display',
-        };
-        const displayId = mapDisplay[pickerName] || `${pickerName}_display`;
-        const displayEl = document.getElementById(displayId);
-        if (displayEl && selected) {
-          displayEl.textContent = selected.label;
-          const parent = displayEl.closest('.picker-input');
-          if (parent){
-            parent.style.borderColor = 'rgba(197,155,253,.8)';
-            parent.style.boxShadow   = '0 0 15px rgba(197,155,253,.3)';
-            setTimeout(()=>{ parent.style.boxShadow=''; }, 1000);
-          }
+      const selected = picker.getSelectedValue();
+      const hiddenInput = document.querySelector(`input[name="${pickerName}"]`);
+      if (!hiddenInput) {
+        console.error(`[confirmPicker] input[name="${pickerName}"] introuvable`);
+      } else if (selected) {
+        hiddenInput.value = selected.value;
+      }
+
+      const mapDisplay = {
+        'duree_unite': 'unite_display',
+        'duree_valeur': 'duree_display',
+        'nombre_personnes': 'personnes_display',
+        'frequence_semaine': 'frequence_display',
+      };
+      const displayId = mapDisplay[pickerName] || `${pickerName}_display`;
+      const displayEl = document.getElementById(displayId);
+      if (!displayEl) {
+        console.error(`[confirmPicker] display "${displayId}" introuvable`);
+      } else if (selected) {
+        displayEl.textContent = selected.label;
+        const parent = displayEl.closest('.picker-input');
+        if (parent){
+          parent.style.borderColor = 'rgba(197,155,253,.8)';
+          parent.style.boxShadow   = '0 0 15px rgba(197,155,253,.3)';
+          setTimeout(()=>{ parent.style.boxShadow=''; }, 800);
         }
       }
+
       closePicker(pickerName);
     }
 
@@ -667,4 +702,3 @@
   <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97ffc1ec23b1b70e',t:'MTc1ODAxOTM1MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>
-
