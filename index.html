@@ -415,7 +415,11 @@
         document.addEventListener('mouseup', () => this.endDrag());
 
         this.wheelItems.addEventListener('touchstart', e => this.startDrag(e.touches[0].clientY), { passive: false });
-        document.addEventListener('touchmove', e => { this.moveDrag(e.touches[0].clientY); e.preventDefault(); }, { passive: false });
+        document.addEventListener('touchmove', e => {
+  if (!this.isDragging) return;
+  this.moveDrag(e.touches[0].clientY);
+  e.preventDefault();   // 🔒 bloque seulement quand on est en train de tirer la roue
+}, { passive: false });
         document.addEventListener('touchend', () => this.endDrag());
 
         this.wheelItems.addEventListener('wheel', e => {
