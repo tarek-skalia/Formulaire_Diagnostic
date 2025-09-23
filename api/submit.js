@@ -1,4 +1,4 @@
-// api/submit.js
+// api/submit.js — Vercel Serverless Function
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -6,13 +6,11 @@ export default async function handler(req, res) {
   }
 
   try {
-    // ✅ Webhook N8N actif (workflow activé, sans -test)
     const webhookUrl = "https://n8n-skalia-u41651.vm.elestio.app/webhook/525f3f8f-cab0-439b-b881-2348796bbbd7";
 
-    // 🔍 Log côté Vercel pour debug
-    console.log("📩 Données reçues du formulaire:", req.body);
+    // (optionnel) log pour debug dans Vercel
+    console.log("📩 Données reçues:", req.body);
 
-    // 📤 Envoi vers N8N
     const response = await fetch(webhookUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -20,21 +18,17 @@ export default async function handler(req, res) {
     });
 
     if (!response.ok) {
-      throw new Error(`Erreur N8N: ${response.status} ${response.statusText}`);
+      const text = await response.text();
+      console.error("n8n non-OK:", response.status, text);
+      return res.status(502).json({ error: "n8n a renvoyé une erreur", status: response.status, body: text });
     }
 
-    // 🔎 Essayer de lire la réponse de N8N
     let data = {};
-    try {
-      data = await response.json();
-    } catch {
-      data = { message: "Pas de JSON retourné par N8N (c'est normal si ton workflow ne renvoie rien)" };
-    }
+    try { data = await response.json(); } catch { data = { message: "OK (pas de JSON depuis n8n)" }; }
 
-    // ✅ Succès → réponse envoyée au frontend
-    res.status(200).json({ success: true, data });
+    return res.status(200).json({ success: true, data });
   } catch (error) {
-    console.error("❌ Erreur proxy vers N8N:", error);
-    res.status(500).json({ error: "Erreur lors de l'envoi vers N8N" });
+    console.error("❌ Erreur proxy → n8n:", error);
+    return res.status(500).json({ error: "Erreur interne lors de l'envoi vers n8n" });
   }
 }
