@@ -577,7 +577,59 @@
     });
 
     // Ouverture/Fermeture robustes
+    // --- Helpers mobile ---
+// Détecte un device à saisie tactile "coarse" (mobile/tablette)
+const IS_TOUCH = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+
+// Ouvre un sélecteur natif mobile à la place du modal custom
+function openNativePicker(pickerName) {
+  const picker = pickers[pickerName];
+  if (!picker || !picker.options) return;
+
+  const select = document.createElement('select');
+  select.style.position = 'fixed';
+  select.style.top = '-9999px';
+  select.style.left = '-9999px';
+  select.style.opacity = '0';
+
+  // Options
+  picker.options.forEach((opt, i) => {
+    const o = document.createElement('option');
+    o.value = opt.value;
+    o.textContent = opt.label;
+    if (i === picker.currentIndex) o.selected = true;
+    select.appendChild(o);
+  });
+
+  select.addEventListener('change', () => {
+    const idx = select.selectedIndex;
+    if (idx < 0) return;
+
+    picker.currentIndex = idx;
+    const selected = picker.options[idx];
+
+    const hiddenInput = document.querySelector(`input[name="${pickerName}"]`);
+    if (hiddenInput) hiddenInput.value = selected.value;
+
+    const mapDisplay = {
+      'duree_unite': 'unite_display',
+      'duree_valeur': 'duree_display',
+      'nombre_personnes': 'personnes_display',
+      'frequence_semaine': 'frequence_display',
+    };
+    const displayId = mapDisplay[pickerName] || `${pickerName}_display`;
+    const displayEl = document.getElementById(displayId);
+    if (displayEl) displayEl.textContent = selected.label;
+  });
+
+  document.body.appendChild(select);
+  select.focus();
+  select.click(); // déclenche le picker natif iOS/Android
+  setTimeout(() => { if (select.parentNode) select.parentNode.removeChild(select); }, 1000);
+}
     function openPicker(pickerName) {
+  // Sur mobile/tablette, utiliser le picker natif (fiable)
+  if (IS_TOUCH) { openNativePicker(pickerName); return; }
       let modal = document.getElementById(`${pickerName}_modal`);
       if (!modal) {
         const fallbackId = `${pickerName.replace(/_/g,'')}_modal`;
