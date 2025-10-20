@@ -71,6 +71,7 @@
     @keyframes slideUp   { from{transform:translate(-50%,0);opacity:1;}   to{transform:translate(-50%,-100%);opacity:0;} }
 
     /* Wheel picker */
+    .wheel-picker.dragging { touch-action: none; }   
     .wheel-picker-container{ position:relative; height:160px; margin-bottom:10px; }
     .wheel-picker{
       position:relative;
@@ -467,11 +468,10 @@
         // Tactile : on bloque la page SEULEMENT pendant le drag
         this.wheelItems.addEventListener('touchstart', (e) => {
           this.startDrag(e.touches[0].clientY);
-          e.preventDefault();
           e.stopPropagation();
         }, { passive: false });
 
-        document.addEventListener('touchmove', (e) => {
+        this.wheelItems.addEventListener('touchmove', (e) => {
           if (!this.isDragging) return;
           this.moveDrag(e.touches[0].clientY);
           e.preventDefault(); // bloque scroll page pendant le drag
@@ -491,6 +491,7 @@
         this.isDragging = true;
         this.startY = y;
         this.startTransform = this.getCurrentTransform();
+        this.wheelElement.classList.add('dragging');
       }
 
       moveDrag(y) {
@@ -503,6 +504,7 @@
         if (!this.isDragging) return;
         this.isDragging = false;
         this.snapToNearest();
+        this.wheelElement.classList.remove('dragging');
       }
 
       getCurrentTransform() {
